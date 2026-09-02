@@ -610,19 +610,13 @@
       <div class="nav-scroll">
         <div class="nav-group">
           <div class="nav-label">工作台</div>
-          <button class="nav-item active" data-page="overview"><span class="nav-icon">OV</span>资产总览</button>
+          <button class="nav-item active" data-page="overview"><span class="nav-icon">OV</span>工作台</button>
         </div>
         <div class="nav-group">
-          <div class="nav-label">数据资产</div>
+          <div class="nav-label">资产中心</div>
           <button class="nav-item" data-page="assetCatalog"><span class="nav-icon">ALL</span>资产目录</button>
           <button class="nav-item" data-page="masterData"><span class="nav-icon">MDM</span>主数据</button>
-          <button class="nav-item" data-page="analyticsData"><span class="nav-icon">ANA</span>分析数据</button>
-          <button class="nav-item" data-page="crawlerData"><span class="nav-icon">CRW</span>爬虫数据</button>
-          <button class="nav-item" data-page="competitorData"><span class="nav-icon">CMP</span>竞品分析</button>
-        </div>
-        <div class="nav-group">
-          <div class="nav-label">BI 分析</div>
-          <button class="nav-item" data-page="biCenter"><span class="nav-icon">BI</span>BI 分析中心</button>
+          <button class="nav-item" data-page="biCenter"><span class="nav-icon">BI</span>分析与报表</button>
         </div>
         <div class="nav-group">
           <div class="nav-label">数据服务</div>
@@ -632,18 +626,21 @@
           <button class="nav-item" data-page="guide"><span class="nav-icon">DOC</span>接入指南</button>
         </div>
         <div class="nav-group" data-role-nav="publisher admin">
-          <div class="nav-label">资产建设</div>
+          <div class="nav-label">数据开发</div>
           <button class="nav-item" data-page="assets"><span class="nav-icon">API</span>API 资产</button>
           <button class="nav-item" data-page="publish"><span class="nav-icon">NEW</span>发布 API</button>
         </div>
         <div class="nav-group" data-role-nav="admin">
-          <div class="nav-label">数据治理</div>
+          <div class="nav-label">治理与安全</div>
           <button class="nav-item" data-page="tags"><span class="nav-icon">TAG</span>标签体系</button>
           <button class="nav-item" data-page="quality"><span class="nav-icon">DQC</span>质量与血缘</button>
           <button class="nav-item" data-page="roles"><span class="nav-icon">IAM</span>角色权限</button>
           <button class="nav-item" data-page="simulator"><span class="nav-icon">SIM</span>权限模拟</button>
-          <button class="nav-item" data-page="operations"><span class="nav-icon">OPS</span>运营分析</button>
           <button class="nav-item" data-page="audit"><span class="nav-icon">AUD</span>审计日志</button>
+        </div>
+        <div class="nav-group" data-role-nav="admin">
+          <div class="nav-label">运营管理</div>
+          <button class="nav-item" data-page="operations"><span class="nav-icon">OPS</span>运营分析</button>
         </div>
       </div>
       <div class="sidebar-footer">
@@ -1461,7 +1458,7 @@
       document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active",
         item.dataset.page === state.page ||
         (state.page === "apiDetail" && item.dataset.page === "market") ||
-        (state.page === "assetDetail" && ({ "主数据": "masterData", "分析数据": "analyticsData", "爬虫数据": "crawlerData", "竞品分析": "competitorData" }[state.selectedAsset?.type] === item.dataset.page)) ||
+        (state.page === "assetDetail" && item.dataset.page === "assetCatalog") ||
         (state.page === "reportDetail" && item.dataset.page === "biCenter")
       ));
       document.querySelectorAll("[data-role-nav]").forEach(group => {
