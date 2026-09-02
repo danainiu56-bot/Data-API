@@ -217,7 +217,7 @@
       margin-bottom: 20px;
     }
 
-    .page-head h1 { margin: 0; font-size: 24px; letter-spacing: -0.03em; }
+    .page-head h1 { margin: 0; font-size: 24px; letter-spacing: 0; }
     .page-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
 
     .btn {
@@ -268,7 +268,7 @@
 
     .stat-card { padding: 16px; }
     .stat-label { color: var(--muted); font-size: 12px; }
-    .stat-value { margin: 8px 0 4px; font-size: 26px; font-weight: 800; letter-spacing: -0.04em; }
+    .stat-value { margin: 8px 0 4px; font-size: 26px; font-weight: 800; letter-spacing: 0; }
     .stat-meta { color: var(--success); font-size: 11px; }
 
     .pill {
@@ -412,7 +412,7 @@
     .report-preview span { flex: 1; border-radius: 3px 3px 0 0; background: var(--primary); opacity: .75; }
     .chart-panel { min-height: 260px; padding: 18px; }
     .chart-bars { display: flex; align-items: end; gap: 12px; height: 185px; padding: 18px 8px 0; border-bottom: 1px solid var(--line); }
-    .chart-bar { flex: 1; position: relative; min-width: 26px; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, var(--primary), #8ca9ff); }
+    .chart-bar { flex: 1; position: relative; min-width: 26px; border-radius: 6px 6px 0 0; background: var(--primary); }
     .chart-bar small { position: absolute; bottom: -24px; left: 50%; color: var(--muted); font-size: 8px; transform: translateX(-50%); }
     .relation-list { display: grid; gap: 8px; }
     .relation-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-soft); }
@@ -598,49 +598,403 @@
       .table-card { overflow-x: auto; }
       table { min-width: 720px; }
     }
+
+    /* Modern enterprise data workspace */
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --ink: #101828;
+      --muted: #667085;
+      --line: #e4e7ec;
+      --nav: #fbfcfe;
+      --nav-soft: #f2f4f7;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-soft: #eff4ff;
+      --success: #16845b;
+      --success-soft: #eaf7f1;
+      --warning: #b54708;
+      --warning-soft: #fff6e8;
+      --danger: #d92d20;
+      --danger-soft: #fff0ee;
+      --purple: #6d5bd0;
+      --purple-soft: #f2f0ff;
+      --shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+      --radius: 8px;
+      --sidebar: 224px;
+      --topbar: 58px;
+    }
+
+    body {
+      letter-spacing: 0;
+      background: var(--bg);
+      font-size: 14px;
+    }
+
+    ::selection { color: var(--ink); background: #dbe7ff; }
+
+    button, input, select, textarea { letter-spacing: 0; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.16);
+      outline-offset: 1px;
+    }
+
+    .sidebar {
+      color: var(--ink);
+      background: var(--nav);
+      border-right: 1px solid var(--line);
+    }
+
+    .brand {
+      gap: 10px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      color: #ffffff;
+      background: var(--primary);
+    }
+
+    .brand-mark svg { width: 17px; height: 17px; stroke-width: 1.9; }
+    .brand-copy strong { color: #182230; font-size: 14px; font-weight: 720; }
+    .brand-copy span { color: #98a2b3; font-size: 10px; }
+
+    .nav-scroll {
+      padding: 14px 10px 20px;
+      scrollbar-color: #d0d5dd transparent;
+      scrollbar-width: thin;
+    }
+
+    .nav-group { margin-bottom: 17px; }
+    .nav-label {
+      padding: 0 10px 6px;
+      color: #98a2b3;
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .nav-item {
+      position: relative;
+      gap: 10px;
+      min-height: 38px;
+      margin: 1px 0;
+      padding: 0 10px;
+      border-radius: 6px;
+      color: #475467;
+      font-size: 13px;
+      font-weight: 590;
+      transition: color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .nav-item:hover { color: #182230; background: #f2f4f7; }
+    .nav-item.active {
+      color: var(--primary);
+      background: var(--primary-soft);
+      box-shadow: inset 2px 0 var(--primary);
+    }
+
+    .nav-icon {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 17px;
+      border-radius: 0;
+      color: #667085;
+      background: transparent;
+      stroke-width: 1.8;
+    }
+
+    .nav-item.active .nav-icon { color: var(--primary); }
+    .sidebar-footer { padding: 12px; border-top: 1px solid var(--line); }
+    .role-card { padding: 10px 11px; border: 1px solid var(--line); border-radius: 7px; background: #ffffff; }
+    .role-card small { color: #98a2b3; }
+    .role-card strong { color: #344054; font-size: 11px; font-weight: 650; }
+
+    .topbar {
+      padding: 0 28px;
+      border-bottom: 1px solid rgba(228, 231, 236, 0.9);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px) saturate(160%);
+    }
+
+    .top-search { width: min(500px, 48vw); }
+    .top-search input {
+      height: 36px;
+      padding: 0 14px 0 38px;
+      border-color: #e4e7ec;
+      border-radius: 7px;
+      color: var(--ink);
+      background: #f8fafc;
+      font-size: 12px;
+      transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .top-search input::placeholder { color: #98a2b3; }
+    .top-search input:focus { border-color: #a9c1f8; background: #ffffff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08); }
+    .top-search::before { display: none; }
+    .top-search > svg { position: absolute; top: 10px; left: 13px; width: 15px; height: 15px; color: #98a2b3; }
+    .top-actions { gap: 8px; }
+
+    .role-select {
+      height: 34px;
+      padding: 0 28px 0 10px;
+      border-radius: 6px;
+      border-color: #e4e7ec;
+      color: #344054;
+      background-color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .icon-btn {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: #667085;
+      background: transparent;
+    }
+
+    .icon-btn:hover { color: #344054; border-color: var(--line); background: #ffffff; }
+    .icon-btn svg { width: 17px; height: 17px; }
+    .notification-count {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      min-width: 14px;
+      height: 14px;
+      padding: 0 3px;
+      border: 2px solid #ffffff;
+      border-radius: 8px;
+      color: #ffffff;
+      background: var(--primary);
+      font-size: 8px;
+      font-weight: 700;
+      line-height: 10px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #dbe7ff;
+      border-radius: 50%;
+      color: #315fd4;
+      background: #edf3ff;
+      font-size: 11px;
+    }
+
+    .content { width: 100%; max-width: 1680px; margin: 0 auto; padding: 28px 32px 48px; }
+    .page-head { align-items: center; margin-bottom: 22px; }
+    .page-head h1 { font-size: 23px; font-weight: 730; letter-spacing: 0; }
+    .page-head p { margin-top: 4px; color: #667085; font-size: 12px; }
+
+    .btn {
+      min-height: 34px;
+      padding: 0 12px;
+      border-color: #d0d5dd;
+      border-radius: 6px;
+      color: #344054;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+      font-size: 12px;
+      font-weight: 620;
+      transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .btn:hover { border-color: #98a2b3; background: #f9fafb; }
+    .btn.primary { border-color: var(--primary); background: var(--primary); box-shadow: 0 1px 2px rgba(37, 99, 235, 0.18); }
+    .btn.primary:hover { border-color: var(--primary-dark); background: var(--primary-dark); }
+    .btn.ghost { color: #667085; box-shadow: none; }
+
+    .cards-4 {
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--line);
+    }
+
+    .cards-4 > .card { border: 0; border-radius: 0; box-shadow: none; }
+    .cards-3, .grid-2, .api-grid, .report-grid { gap: 16px; }
+
+    .card {
+      border-color: var(--line);
+      border-radius: var(--radius);
+      box-shadow: none;
+    }
+
+    .card-head { min-height: 50px; padding: 0 18px; }
+    .card-head strong { color: #344054; font-size: 13px; font-weight: 680; }
+    .card-body { padding: 18px; }
+    .stat-card { min-height: 126px; padding: 18px 20px; }
+    .stat-label { color: #667085; font-size: 11px; font-weight: 560; }
+    .stat-value { margin: 10px 0 6px; color: #101828; font-size: 28px; font-weight: 730; letter-spacing: 0; }
+    .stat-meta { font-size: 10px; font-weight: 560; }
+
+    .pill {
+      min-height: 20px;
+      padding: 0 7px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 650;
+    }
+
+    .list-row { min-height: 58px; padding: 11px 0; }
+    .list-title { color: #344054; font-size: 12px; font-weight: 650; }
+    .list-sub { color: #7c8798; font-size: 10px; }
+
+    .filterbar { gap: 8px; padding: 10px; border-radius: 7px; }
+    .field, .select { height: 34px; border-radius: 6px; border-color: #d0d5dd; font-size: 11px; }
+    .field:focus, .select:focus, textarea:focus { border-color: #a9c1f8; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08); }
+
+    .asset-type-grid { gap: 10px; }
+    .asset-type-card { min-height: 128px; padding: 15px; border-radius: 7px; transition: border-color 150ms ease, background-color 150ms ease; }
+    .asset-type-card:hover, .asset-type-card.active { border-color: #a9c1f8; background: #f7f9ff; }
+    .asset-type-card strong { color: #344054; font-weight: 650; }
+
+    .asset-catalog-layout { grid-template-columns: 210px minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+    .asset-filter-panel { padding: 10px; }
+    .asset-filter-option { border-radius: 5px; }
+    .asset-filter-option:hover, .asset-filter-option.active { color: var(--primary); background: var(--primary-soft); }
+    .asset-list { gap: 8px; }
+    .asset-row { padding: 14px 16px; border-radius: 7px; transition: border-color 150ms ease, box-shadow 150ms ease; }
+    .asset-row:hover { border-color: #a9c1f8; box-shadow: 0 4px 12px rgba(16, 24, 40, 0.045); }
+
+    .market-layout { grid-template-columns: 286px minmax(0, 1fr); gap: 16px; }
+    .category-panel { top: calc(var(--topbar) + 18px); padding: 10px; }
+    .category-all, .category-main { min-height: 36px; border-radius: 5px; font-weight: 620; }
+    .category-all:hover, .category-main:hover, .category-sub:hover { color: var(--primary); background: #f5f8ff; }
+    .category-all.active, .category-main.active { color: var(--primary); background: var(--primary-soft); box-shadow: inset 2px 0 var(--primary); }
+    .category-all.active .category-count, .category-main.active .category-count { color: var(--primary); background: #dfe9ff; }
+    .category-sub { border-radius: 5px; }
+    .api-tree-item { grid-template-columns: 38px minmax(0, 1fr); min-height: 46px; border-radius: 6px; }
+    .api-tree-item:hover { color: var(--primary); background: #f5f8ff; }
+    .api-tree-item.active { background: var(--primary-soft); box-shadow: inset 2px 0 var(--primary); }
+    .api-tree-item .method { padding: 0; background: transparent; font-size: 8px; text-align: left; }
+    .api-tree-copy strong { color: #344054; font-size: 10px; font-weight: 650; }
+    .api-tree-item.active .api-tree-copy strong { color: var(--primary); }
+
+    .market-detail-pane > .card:first-child { padding: 0 18px !important; }
+    .market-detail-pane .tabs { margin-top: 0; }
+    .api-reference { padding: 26px 28px; }
+    .reference-head { padding-bottom: 20px; }
+    .reference-head h2 { color: #182230; font-size: 19px; font-weight: 700; }
+    .reference-section { padding: 22px 0; }
+    .reference-title { color: #344054; font-size: 13px; font-weight: 680; }
+    .reference-title span { color: #98a2b3; }
+    .reference-meta { gap: 18px 24px; }
+    .reference-meta small { color: #98a2b3; }
+
+    .category-summary { margin-bottom: 14px; padding: 16px 18px; border-radius: 8px; }
+    .category-summary h2 { color: #182230; font-size: 18px; font-weight: 700; }
+    .category-stats strong { font-weight: 700; }
+    .category-count { border-radius: 4px; }
+
+    .api-card, .report-card { border-radius: 8px; transition: border-color 150ms ease, box-shadow 150ms ease; }
+    .api-card:hover, .report-card:hover { transform: none; border-color: #a9c1f8; box-shadow: 0 4px 12px rgba(16, 24, 40, 0.045); }
+    .report-preview { border-radius: 6px; }
+    .chart-bar { border-radius: 4px 4px 0 0; background: #4f7fff; }
+
+    .detail-hero { padding: 22px 24px; }
+    .detail-title h1 { color: #182230; font-size: 22px; font-weight: 720; letter-spacing: 0; }
+    .endpoint { border: 1px solid var(--line); border-radius: 6px; background: #f8fafc; }
+    .meta-row { gap: 20px; }
+    .tabs { gap: 8px; margin-top: 18px; }
+    .tab { min-height: 42px; padding: 0 5px; font-weight: 620; }
+
+    table { font-size: 11px; }
+    th { padding: 10px 12px; color: #667085; background: #f8fafc; font-weight: 620; }
+    td { padding: 11px 12px; }
+    tr:hover td { background: #fafcff; }
+    .code-box { border-radius: 7px; color: #d8e2f4; background: #101828; }
+
+    .guide-step, .policy-block, .result-panel, .source-choice, .lineage-node, .relation-item { border-radius: 7px; }
+    .tag-chip { min-height: 26px; border-radius: 5px; background: #ffffff; }
+    .notice { border-radius: 6px; }
+    .modal { border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 24px 64px rgba(16, 24, 40, 0.18); }
+    .modal-close { border-radius: 5px; }
+    .wizard-step { border-radius: 5px; }
+    .toast { border-radius: 7px; background: #182230; }
+
+    @media (max-width: 1120px) {
+      .content { padding-right: 24px; padding-left: 24px; }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar { width: 244px; box-shadow: 16px 0 40px rgba(16, 24, 40, 0.16); }
+      .topbar { padding: 0 12px; }
+      .mobile-menu { width: 34px; padding: 0; }
+      .mobile-menu span { display: none; }
+      .role-select { width: 148px; }
+      .content { padding: 20px 12px 36px; }
+      .page-head { gap: 12px; margin-bottom: 18px; }
+      .page-head h1 { font-size: 21px; }
+      .cards-4 { grid-template-columns: 1fr 1fr; }
+      .cards-4 > .card { min-height: 112px; }
+      .market-detail-pane > .card:first-child { overflow-x: auto; }
+      .api-reference { padding: 18px 16px; }
+      .reference-head { align-items: flex-start; flex-direction: column; }
+      .reference-meta { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 430px) {
+      .cards-4 { grid-template-columns: 1fr; }
+      .reference-meta { grid-template-columns: 1fr; }
+      .topbar > .top-actions:last-child { gap: 4px; }
+      .avatar { display: none; }
+    }
   </style>
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-mark">DH</div>
+        <div class="brand-mark"><i data-lucide="database"></i></div>
         <div class="brand-copy"><strong>DataHub</strong><span>企业数据资产平台</span></div>
       </div>
       <div class="nav-scroll">
         <div class="nav-group">
           <div class="nav-label">工作台</div>
-          <button class="nav-item active" data-page="overview"><span class="nav-icon">OV</span>工作台</button>
+          <button class="nav-item active" data-page="overview"><i class="nav-icon" data-lucide="layout-dashboard"></i>工作台</button>
         </div>
         <div class="nav-group">
           <div class="nav-label">资产中心</div>
-          <button class="nav-item" data-page="assetCatalog"><span class="nav-icon">ALL</span>资产目录</button>
-          <button class="nav-item" data-page="masterData"><span class="nav-icon">MDM</span>主数据</button>
-          <button class="nav-item" data-page="biCenter"><span class="nav-icon">BI</span>分析与报表</button>
+          <button class="nav-item" data-page="assetCatalog"><i class="nav-icon" data-lucide="library"></i>资产目录</button>
+          <button class="nav-item" data-page="masterData"><i class="nav-icon" data-lucide="boxes"></i>主数据</button>
+          <button class="nav-item" data-page="biCenter"><i class="nav-icon" data-lucide="bar-chart-3"></i>分析与报表</button>
         </div>
         <div class="nav-group">
           <div class="nav-label">数据服务</div>
-          <button class="nav-item" data-page="market"><span class="nav-icon">MK</span>API 市场</button>
-          <button class="nav-item" data-page="apps"><span class="nav-icon">APP</span>我的应用</button>
-          <button class="nav-item" data-page="logs"><span class="nav-icon">LOG</span>调用日志</button>
-          <button class="nav-item" data-page="guide"><span class="nav-icon">DOC</span>接入指南</button>
+          <button class="nav-item" data-page="market"><i class="nav-icon" data-lucide="store"></i>API 市场</button>
+          <button class="nav-item" data-page="apps"><i class="nav-icon" data-lucide="blocks"></i>我的应用</button>
+          <button class="nav-item" data-page="logs"><i class="nav-icon" data-lucide="activity"></i>调用日志</button>
+          <button class="nav-item" data-page="guide"><i class="nav-icon" data-lucide="book-open"></i>接入指南</button>
         </div>
         <div class="nav-group" data-role-nav="publisher admin">
           <div class="nav-label">数据开发</div>
-          <button class="nav-item" data-page="assets"><span class="nav-icon">API</span>API 资产</button>
-          <button class="nav-item" data-page="publish"><span class="nav-icon">NEW</span>发布 API</button>
+          <button class="nav-item" data-page="assets"><i class="nav-icon" data-lucide="code-2"></i>API 资产</button>
+          <button class="nav-item" data-page="publish"><i class="nav-icon" data-lucide="rocket"></i>发布 API</button>
         </div>
         <div class="nav-group" data-role-nav="admin">
           <div class="nav-label">治理与安全</div>
-          <button class="nav-item" data-page="tags"><span class="nav-icon">TAG</span>标签体系</button>
-          <button class="nav-item" data-page="quality"><span class="nav-icon">DQC</span>质量与血缘</button>
-          <button class="nav-item" data-page="roles"><span class="nav-icon">IAM</span>角色权限</button>
-          <button class="nav-item" data-page="simulator"><span class="nav-icon">SIM</span>权限模拟</button>
-          <button class="nav-item" data-page="audit"><span class="nav-icon">AUD</span>审计日志</button>
+          <button class="nav-item" data-page="tags"><i class="nav-icon" data-lucide="tags"></i>标签体系</button>
+          <button class="nav-item" data-page="quality"><i class="nav-icon" data-lucide="git-branch"></i>质量与血缘</button>
+          <button class="nav-item" data-page="roles"><i class="nav-icon" data-lucide="shield-check"></i>角色权限</button>
+          <button class="nav-item" data-page="simulator"><i class="nav-icon" data-lucide="scan-search"></i>权限模拟</button>
+          <button class="nav-item" data-page="audit"><i class="nav-icon" data-lucide="scroll-text"></i>审计日志</button>
         </div>
         <div class="nav-group" data-role-nav="admin">
           <div class="nav-label">运营管理</div>
-          <button class="nav-item" data-page="operations"><span class="nav-icon">OPS</span>运营分析</button>
+          <button class="nav-item" data-page="operations"><i class="nav-icon" data-lucide="chart-spline"></i>运营分析</button>
         </div>
       </div>
       <div class="sidebar-footer">
@@ -651,8 +1005,8 @@
     <main class="main">
       <header class="topbar">
         <div class="top-actions">
-          <button class="btn mobile-menu" id="mobileMenu">菜单</button>
-          <div class="top-search"><input id="globalSearch" placeholder="搜索 API、字段、业务场景..." /></div>
+          <button class="btn mobile-menu" id="mobileMenu" title="打开菜单" aria-label="打开菜单"><i data-lucide="panel-left"></i><span>菜单</span></button>
+          <div class="top-search"><i data-lucide="search"></i><input id="globalSearch" placeholder="搜索资产、字段、指标或 API" /></div>
         </div>
         <div class="top-actions">
           <select class="role-select" id="roleSelect" aria-label="切换演示角色">
@@ -660,7 +1014,7 @@
             <option value="publisher">发布方 · 数据开发</option>
             <option value="admin">管理员 · 平台运营</option>
           </select>
-          <button class="btn ghost" title="消息">通知 3</button>
+          <button class="icon-btn" title="消息" aria-label="消息，3 条未读"><i data-lucide="bell"></i><span class="notification-count">3</span></button>
           <div class="avatar">MS</div>
         </div>
       </header>
@@ -677,6 +1031,7 @@
   </div>
   <div class="toast" id="toast"></div>
 
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script>
     const apiCategories = [
       { name: "基础数据", desc: "公司统一的产品、组织、站点、仓库和币种等公共基础资料。", subs: ["产品档案", "分类品牌", "组织站点", "仓库币种"] },
@@ -837,7 +1192,7 @@
     const toast = document.getElementById("toast");
 
     const pageMeta = {
-      overview: ["资产总览", "统一发现、治理、分析和服务公司数据资产"],
+      overview: ["数据工作台", "掌握资产健康、服务运行与治理待办"],
       assetCatalog: ["资产目录", "统一检索主数据、分析数据、爬虫数据和竞品分析资产"],
       masterData: ["主数据", "统一管理产品、品类、品牌、供应商、仓库和组织标准"],
       analyticsData: ["分析数据", "沉淀销售、广告、库存、供应链和财务认证数据集"],
@@ -875,7 +1230,7 @@
     function renderOverview() {
       const certified = dataAssets.filter(asset => asset.status === "已认证").length;
       const avgQuality = (dataAssets.reduce((sum, asset) => sum + asset.quality, 0) / dataAssets.length).toFixed(1);
-      content.innerHTML = pageHead(`<button class="btn" data-go="biCenter">进入 BI 分析</button><button class="btn primary" data-go="assetCatalog">浏览数据资产</button>`) + `
+      content.innerHTML = pageHead(`<button class="btn" data-go="biCenter">分析与报表</button><button class="btn primary" data-go="assetCatalog">浏览资产</button>`) + `
         <div class="cards-4">
           <div class="card stat-card"><div class="stat-label">数据资产</div><div class="stat-value">1,286</div><div class="stat-meta">本月新增 36 项</div></div>
           <div class="card stat-card"><div class="stat-label">认证资产</div><div class="stat-value">${certified}</div><div class="stat-meta">核心资产认证率 82%</div></div>
@@ -1824,6 +2179,7 @@ Role-Package: business-developer</div>`, `<button class="btn" id="modalCancel">�
 
     document.getElementById("roleSelect").value = state.role;
     renderPage();
+    if (window.lucide) window.lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
   </script>
 </body>
 </html>
