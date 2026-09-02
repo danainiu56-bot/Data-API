@@ -644,7 +644,34 @@
       color: var(--ink);
       background: var(--nav);
       border-right: 1px solid var(--line);
+      transition: width 180ms ease, box-shadow 180ms ease;
     }
+
+    .app-shell { transition: grid-template-columns 180ms ease; }
+    body.sidebar-collapsed { --sidebar: 72px; }
+
+    body.sidebar-collapsed .brand {
+      justify-content: center;
+      padding: 0;
+    }
+
+    body.sidebar-collapsed .brand-copy,
+    body.sidebar-collapsed .nav-label,
+    body.sidebar-collapsed .sidebar-footer { display: none; }
+
+    body.sidebar-collapsed .nav-scroll { padding: 14px 8px 20px; }
+    body.sidebar-collapsed .nav-group { margin-bottom: 8px; }
+    body.sidebar-collapsed .nav-item {
+      justify-content: center;
+      width: 44px;
+      min-height: 40px;
+      margin: 2px auto;
+      padding: 0;
+      font-size: 0;
+    }
+
+    body.sidebar-collapsed .nav-item.active { box-shadow: inset 2px 0 var(--primary); }
+    body.sidebar-collapsed .nav-icon { width: 18px; height: 18px; flex-basis: 18px; }
 
     .brand {
       gap: 10px;
@@ -766,6 +793,8 @@
 
     .icon-btn:hover { color: #344054; border-color: var(--line); background: #ffffff; }
     .icon-btn svg { width: 17px; height: 17px; }
+    .sidebar-collapse svg { transition: transform 180ms ease; }
+    body.sidebar-collapsed .sidebar-collapse svg { transform: rotate(180deg); }
     .notification-count {
       position: absolute;
       top: 2px;
@@ -930,8 +959,10 @@
     }
 
     @media (max-width: 760px) {
+      body.sidebar-collapsed { --sidebar: 0px; }
       .sidebar { width: 244px; box-shadow: 16px 0 40px rgba(16, 24, 40, 0.16); }
       .topbar { padding: 0 12px; }
+      .sidebar-collapse { display: none; }
       .mobile-menu { width: 34px; padding: 0; }
       .mobile-menu span { display: none; }
       .role-select { width: 148px; }
@@ -1006,6 +1037,7 @@
       <header class="topbar">
         <div class="top-actions">
           <button class="btn mobile-menu" id="mobileMenu" title="打开菜单" aria-label="打开菜单"><i data-lucide="panel-left"></i><span>菜单</span></button>
+          <button class="icon-btn sidebar-collapse" id="sidebarCollapse" title="收起菜单" aria-label="收起菜单" aria-controls="sidebar" aria-expanded="true"><i data-lucide="panel-left-close"></i></button>
           <div class="top-search"><i data-lucide="search"></i><input id="globalSearch" placeholder="搜索资产、字段、指标或 API" /></div>
         </div>
         <div class="top-actions">
@@ -1184,6 +1216,7 @@
 
     const content = document.getElementById("content");
     const sidebar = document.getElementById("sidebar");
+    const sidebarCollapse = document.getElementById("sidebarCollapse");
     const backdrop = document.getElementById("modalBackdrop");
     const modal = document.getElementById("modal");
     const modalTitle = document.getElementById("modalTitle");
@@ -2160,7 +2193,21 @@ Role-Package: business-developer</div>`, `<button class="btn" id="modalCancel">�
       showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
     }
 
-    document.querySelectorAll(".nav-item").forEach(item => item.addEventListener("click", () => navigate(item.dataset.page)));
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.title = item.textContent.trim();
+      item.addEventListener("click", () => navigate(item.dataset.page));
+    });
+
+    function updateSidebarState(collapsed) {
+      document.body.classList.toggle("sidebar-collapsed", collapsed);
+      sidebarCollapse.setAttribute("aria-expanded", String(!collapsed));
+      sidebarCollapse.setAttribute("aria-label", collapsed ? "展开菜单" : "收起菜单");
+      sidebarCollapse.title = collapsed ? "展开菜单" : "收起菜单";
+      localStorage.setItem("datahub-sidebar-collapsed", String(collapsed));
+    }
+
+    updateSidebarState(localStorage.getItem("datahub-sidebar-collapsed") === "true");
+    sidebarCollapse.addEventListener("click", () => updateSidebarState(!document.body.classList.contains("sidebar-collapsed")));
     document.getElementById("roleSelect").addEventListener("change", (event) => {
       state.role = event.target.value;
       localStorage.setItem("datahub-demo-role", state.role);
