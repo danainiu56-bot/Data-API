@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="公司统一数据资产平台可点击原型" />
+  <title>DataHub · 企业数据资产平台</title>
+  <style>
+    :root {
+      --bg: #f3f5f9;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --ink: #172033;
+      --muted: #69758a;
+      --line: #e1e6ef;
+      --nav: #111827;
+      --nav-soft: #1f2937;
+      --primary: #315fd4;
+      --primary-dark: #2349ad;
+      --primary-soft: #eaf0ff;
+      --success: #1d8056;
+      --success-soft: #e8f6ef;
+      --warning: #aa671b;
+      --warning-soft: #fff3e4;
+      --danger: #b74754;
+      --danger-soft: #fdecee;
+      --purple: #7151aa;
+      --purple-soft: #f2edfb;
+      --shadow: 0 12px 34px rgba(23, 32, 51, 0.08);
+      --radius: 14px;
+      --sidebar: 244px;
+      --topbar: 64px;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 30;
+      display: flex;
+      width: var(--sidebar);
+      flex-direction: column;
+      color: #fff;
+      background: var(--nav);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      height: var(--topbar);
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--primary);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .brand-copy strong { display: block; font-size: 14px; }
+    .brand-copy span { color: rgba(255, 255, 255, 0.48); font-size: 10px; }
+
+    .nav-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 10px;
+    }
+
+    .nav-group { margin-bottom: 18px; }
+
+    .nav-label {
+      padding: 0 10px 7px;
+      color: rgba(255, 255, 255, 0.36);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      margin: 2px 0;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.66);
+      background: transparent;
+      text-align: left;
+      transition: 0.18s ease;
+    }
+
+    .nav-item:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+    .nav-item.active { color: #fff; background: var(--primary); }
+
+    .nav-icon {
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .sidebar-footer {
+      padding: 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .role-card {
+      padding: 11px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .role-card small { color: rgba(255, 255, 255, 0.42); }
+    .role-card strong { display: block; margin-top: 3px; font-size: 12px; }
+
+    .main { grid-column: 2; min-width: 0; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--topbar);
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+    }
+
+    .top-search {
+      position: relative;
+      width: min(460px, 44vw);
+    }
+
+    .top-search input {
+      width: 100%;
+      height: 38px;
+      padding: 0 14px 0 38px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+      background: var(--panel-soft);
+    }
+
+    .top-search input:focus { border-color: var(--primary); background: #fff; }
+    .top-search::before { position: absolute; top: 8px; left: 13px; color: var(--muted); content: "⌕"; font-size: 18px; }
+
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+
+    .role-select {
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .content { padding: 24px; }
+
+    .page-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .page-head h1 { margin: 0; font-size: 24px; letter-spacing: -0.03em; }
+    .page-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 34px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: #fff;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .btn:hover { border-color: #b8c4d8; background: var(--panel-soft); }
+    .btn.primary { color: #fff; border-color: var(--primary); background: var(--primary); }
+    .btn.primary:hover { background: var(--primary-dark); }
+    .btn.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+    .btn.danger { color: var(--danger); border-color: #f0cbd0; background: var(--danger-soft); }
+    .btn:disabled { cursor: not-allowed; opacity: 0.52; }
+
+    .cards-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .cards-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr); gap: 14px; }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 6px 18px rgba(23, 32, 51, 0.035);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 48px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-head strong { font-size: 13px; }
+    .card-body { padding: 16px; }
+
+    .stat-card { padding: 16px; }
+    .stat-label { color: var(--muted); font-size: 12px; }
+    .stat-value { margin: 8px 0 4px; font-size: 26px; font-weight: 800; letter-spacing: -0.04em; }
+    .stat-meta { color: var(--success); font-size: 11px; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 0 8px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: #eef1f6;
+      font-size: 10px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .pill.success { color: var(--success); background: var(--success-soft); }
+    .pill.warning { color: var(--warning); background: var(--warning-soft); }
+    .pill.danger { color: var(--danger); background: var(--danger-soft); }
+    .pill.info { color: var(--primary); background: var(--primary-soft); }
+    .pill.purple { color: var(--purple); background: var(--purple-soft); }
+
+    .list { display: grid; gap: 0; }
+
+    .list-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .list-row:last-child { border-bottom: 0; }
+    .list-title { margin-bottom: 3px; font-weight: 700; font-size: 12px; }
+    .list-sub { color: var(--muted); font-size: 11px; }
+
+    .guide-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .guide-step { position: relative; padding: 13px; border-radius: 10px; background: var(--panel-soft); border: 1px solid var(--line); }
+    .guide-step b { color: var(--primary); font-size: 11px; }
+    .guide-step strong { display: block; margin: 6px 0 3px; font-size: 12px; }
+    .guide-step small { color: var(--muted); }
+
+    .filterbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 14px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+    }
+
+    .field, .select {
+      height: 36px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      outline: none;
+      color: var(--ink);
+      background: #fff;
+      font-size: 12px;
+    }
+
+    .field:focus, .select:focus, textarea:focus { border-color: var(--primary); }
+    .field.grow { flex: 1; min-width: 220px; }
+
+    .market-layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 14px; align-items: start; }
+    .category-panel { position: sticky; top: calc(var(--topbar) + 16px); max-height: calc(100vh - var(--topbar) - 40px); overflow-y: auto; padding: 12px; }
+    .market-filters { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .market-filters .field { width: 100%; min-width: 0; }
+    .category-all, .category-main, .category-sub { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; border: 0; color: var(--muted); background: transparent; text-align: left; }
+    .category-all, .category-main { min-height: 38px; padding: 0 10px; border-radius: 8px; font-size: 12px; font-weight: 750; }
+    .category-all:hover, .category-main:hover, .category-sub:hover { color: var(--primary); background: var(--primary-soft); }
+    .category-all.active, .category-main.active { color: #fff; background: var(--primary); }
+    .category-all.active .category-count, .category-main.active .category-count { color: #fff; background: rgba(255,255,255,.18); }
+    .category-group { margin-top: 4px; }
+    .category-subs { display: grid; gap: 2px; margin: 3px 0 8px; padding-left: 12px; }
+    .category-sub { min-height: 30px; padding: 0 9px; border-radius: 7px; font-size: 11px; }
+    .category-sub.active { color: var(--primary); background: var(--primary-soft); font-weight: 750; }
+    .api-tree-item { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 7px; width: 100%; min-height: 42px; padding: 6px 8px; border: 0; border-radius: 8px; color: var(--muted); background: transparent; text-align: left; }
+    .api-tree-item:hover { color: var(--primary); background: var(--primary-soft); }
+    .api-tree-item.active { color: var(--primary); background: var(--primary-soft); box-shadow: inset 3px 0 var(--primary); }
+    .api-tree-item .method { min-width: 32px; padding: 3px 4px; font-size: 8px; text-align: center; }
+    .api-tree-copy { min-width: 0; }
+    .api-tree-copy strong { display: block; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+    .api-tree-copy small { display: block; margin-top: 2px; overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+    .category-arrow { color: var(--muted); font-size: 9px; }
+    .market-detail-pane { min-width: 0; }
+    .market-detail-pane .detail-hero { margin-top: 0; }
+    .api-basic-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; overflow: hidden; margin-top: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--line); }
+    .api-basic-item { min-width: 0; padding: 11px 12px; background: #fff; }
+    .api-basic-item.wide { grid-column: span 2; }
+    .api-basic-item small { display: block; margin-bottom: 5px; color: var(--muted); font-size: 9px; }
+    .api-basic-item strong, .api-basic-item code { display: block; overflow: hidden; color: var(--ink); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .api-reference { padding: 22px; }
+    .reference-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+    .reference-head h2 { margin: 0 0 5px; font-size: 18px; }
+    .reference-section { padding: 20px 0; border-bottom: 1px solid var(--line); }
+    .reference-section:last-child { border-bottom: 0; }
+    .reference-title { margin: 0 0 12px; font-size: 13px; }
+    .reference-title span { margin-right: 8px; color: var(--primary); }
+    .reference-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 18px; }
+    .reference-meta div { min-width: 0; }
+    .reference-meta small { display: block; margin-bottom: 4px; color: var(--muted); font-size: 9px; }
+    .reference-meta strong, .reference-meta code { font-size: 10px; overflow-wrap: anywhere; }
+    .reference-code { position: relative; }
+    .reference-code .btn { position: absolute; top: 8px; right: 8px; z-index: 1; }
+
+    .asset-type-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+    .asset-type-card { padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--panel); text-align: left; }
+    .asset-type-card:hover, .asset-type-card.active { border-color: var(--primary); background: var(--primary-soft); }
+    .asset-type-card strong { display: block; margin: 8px 0 4px; font-size: 12px; }
+    .asset-type-card small { color: var(--muted); font-size: 9px; }
+    .asset-type-card .stat-value { font-size: 21px; }
+    .asset-catalog-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 14px; align-items: start; margin-top: 14px; }
+    .asset-filter-panel { position: sticky; top: calc(var(--topbar) + 16px); padding: 12px; }
+    .asset-filter-group + .asset-filter-group { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .asset-filter-group strong { display: block; margin-bottom: 8px; font-size: 10px; }
+    .asset-filter-option { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 31px; padding: 0 8px; border: 0; border-radius: 7px; color: var(--muted); background: transparent; font-size: 10px; text-align: left; }
+    .asset-filter-option:hover, .asset-filter-option.active { color: var(--primary); background: var(--primary-soft); }
+    .asset-list { display: grid; gap: 10px; }
+    .asset-row { display: grid; grid-template-columns: minmax(230px, 1.7fr) repeat(4, minmax(90px, .7fr)) 36px; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: var(--panel); text-align: left; }
+    .asset-row:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+    .asset-row-title strong { display: block; margin-bottom: 4px; font-size: 12px; }
+    .asset-row-title small, .asset-cell small { display: block; color: var(--muted); font-size: 9px; }
+    .asset-cell strong { display: block; margin-top: 3px; font-size: 10px; }
+    .quality-track { height: 5px; margin-top: 6px; overflow: hidden; border-radius: 999px; background: #e8edf5; }
+    .quality-track span { display: block; height: 100%; border-radius: inherit; background: var(--success); }
+    .asset-detail-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(260px, .8fr); gap: 14px; }
+    .lineage-flow { display: flex; align-items: center; gap: 8px; overflow-x: auto; padding: 8px 0; }
+    .lineage-node { min-width: 130px; padding: 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel-soft); }
+    .lineage-node strong { display: block; margin-bottom: 4px; font-size: 10px; }
+    .lineage-arrow { color: var(--primary); font-weight: 800; }
+    .report-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .report-card { padding: 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--panel); text-align: left; }
+    .report-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+    .report-card h3 { margin: 12px 0 6px; font-size: 14px; }
+    .report-card p { min-height: 34px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .report-preview { display: flex; align-items: end; gap: 5px; height: 55px; margin-top: 14px; padding: 8px; border-radius: 8px; background: var(--panel-soft); }
+    .report-preview span { flex: 1; border-radius: 3px 3px 0 0; background: var(--primary); opacity: .75; }
+    .chart-panel { min-height: 260px; padding: 18px; }
+    .chart-bars { display: flex; align-items: end; gap: 12px; height: 185px; padding: 18px 8px 0; border-bottom: 1px solid var(--line); }
+    .chart-bar { flex: 1; position: relative; min-width: 26px; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, var(--primary), #8ca9ff); }
+    .chart-bar small { position: absolute; bottom: -24px; left: 50%; color: var(--muted); font-size: 8px; transform: translateX(-50%); }
+    .relation-list { display: grid; gap: 8px; }
+    .relation-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-soft); }
+    .category-count { min-width: 24px; padding: 2px 6px; border-radius: 999px; color: var(--muted); background: #eef1f6; font-size: 9px; text-align: center; }
+    .category-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+    .category-summary h2 { margin: 0 0 4px; font-size: 17px; }
+    .category-summary p { margin: 0; color: var(--muted); font-size: 11px; }
+    .category-stats { display: flex; gap: 18px; color: var(--muted); font-size: 10px; text-align: right; }
+    .category-stats strong { display: block; color: var(--ink); font-size: 16px; }
+    .category-toggle { display: none; }
+
+    .api-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+
+    .api-card {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--ink);
+      background: var(--panel);
+      cursor: pointer;
+      text-align: left;
+      transition: 0.18s ease;
+    }
+
+    .api-card:hover { transform: translateY(-2px); border-color: #a9b9d7; box-shadow: var(--shadow); }
+    .api-card-top { display: flex; justify-content: space-between; gap: 10px; }
+    .method { color: var(--success); font-size: 10px; font-weight: 850; }
+    .api-card h3 { margin: 10px 0 6px; font-size: 15px; }
+    .api-card p { min-height: 38px; margin: 0; color: var(--muted); font-size: 11px; }
+    .api-card-foot { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+
+    .breadcrumb { margin-bottom: 13px; color: var(--muted); font-size: 11px; }
+    .breadcrumb button { padding: 0; border: 0; color: var(--primary); background: transparent; }
+
+    .detail-hero { padding: 20px; }
+    .detail-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+    .detail-title h1 { margin: 8px 0 7px; font-size: 24px; }
+    .endpoint { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: var(--panel-soft); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+    .meta-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; color: var(--muted); font-size: 11px; }
+    .meta-row strong { color: var(--ink); }
+
+    .tabs { display: flex; gap: 3px; margin-top: 16px; border-bottom: 1px solid var(--line); }
+    .tab { padding: 10px 13px; border: 0; border-bottom: 2px solid transparent; color: var(--muted); background: transparent; font-size: 12px; font-weight: 700; }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    .doc-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(310px, 0.75fr); gap: 14px; margin-top: 14px; }
+    .section-title { margin: 4px 0 10px; font-size: 14px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    th { padding: 9px 10px; color: var(--muted); background: var(--panel-soft); text-align: left; font-weight: 750; }
+    td { padding: 10px; border-top: 1px solid var(--line); vertical-align: top; }
+    tr:hover td { background: #fbfcfe; }
+
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .code-box { position: relative; overflow: auto; padding: 14px; border-radius: 10px; color: #d8e2f4; background: #111827; font-size: 11px; line-height: 1.7; white-space: pre-wrap; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; padding: 5px 7px; border: 1px solid rgba(255,255,255,.16); border-radius: 6px; color: #fff; background: rgba(255,255,255,.08); font-size: 9px; }
+
+    .form-group { margin-bottom: 13px; }
+    .form-group label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; outline: none; background: #fff; }
+    .form-group input, .form-group select { height: 36px; padding: 0 10px; }
+    .form-group textarea { min-height: 84px; padding: 10px; resize: vertical; }
+
+    .notice { padding: 11px 12px; border: 1px solid #cdd9f1; border-radius: 9px; color: var(--primary-dark); background: var(--primary-soft); font-size: 11px; }
+    .notice.warning { color: var(--warning); border-color: #efd6b7; background: var(--warning-soft); }
+    .notice.success { color: var(--success); border-color: #bee2d0; background: var(--success-soft); }
+
+    .table-card { overflow: hidden; }
+    .table-toolbar { display: flex; flex-wrap: wrap; gap: 9px; padding: 12px; border-bottom: 1px solid var(--line); }
+
+    .app-card { padding: 16px; }
+    .app-card h3 { margin: 0 0 5px; font-size: 14px; }
+    .credential { margin-top: 13px; padding: 10px; border-radius: 8px; background: var(--panel-soft); font-family: ui-monospace, monospace; font-size: 10px; color: var(--muted); }
+
+    .bar-list { display: grid; gap: 12px; }
+    .bar-head { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 11px; }
+    .bar-track { height: 7px; overflow: hidden; border-radius: 99px; background: #edf0f5; }
+    .bar-fill { height: 100%; border-radius: inherit; background: var(--primary); }
+
+    .tag-group-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tag-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--panel-soft); font-size: 10px; }
+    .tag-chip b { color: var(--primary); font-weight: 750; }
+    .policy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .policy-block { padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--panel-soft); }
+    .policy-block h3 { margin: 0 0 5px; font-size: 13px; }
+    .policy-block p { margin: 0 0 12px; color: var(--muted); font-size: 10px; }
+    .checkbox-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    .checkbox-row { display: flex; align-items: center; gap: 7px; min-height: 31px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; background: #fff; font-size: 10px; }
+    .permission-result { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .result-panel { padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-soft); }
+    .result-panel strong { display: block; margin-bottom: 7px; font-size: 12px; }
+    .result-panel ul { margin: 0; padding-left: 17px; color: var(--muted); font-size: 10px; }
+    .result-panel li + li { margin-top: 4px; }
+
+    .empty { padding: 42px 20px; text-align: center; }
+    .empty strong { display: block; margin-bottom: 6px; }
+    .empty p { margin: 0; color: var(--muted); font-size: 12px; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(8, 15, 27, 0.48);
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(720px, 96vw); max-height: 88vh; overflow: auto; border-radius: 16px; background: #fff; box-shadow: 0 24px 70px rgba(8, 15, 27, 0.22); }
+    .modal.sm { width: min(500px, 96vw); }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+    .modal-head h2 { margin: 0; font-size: 16px; }
+    .modal-close { width: 30px; height: 30px; border: 0; border-radius: 7px; color: var(--muted); background: var(--panel-soft); }
+    .modal-body { padding: 18px; }
+    .modal-foot { display: flex; justify-content: flex-end; gap: 9px; padding: 13px 18px; border-top: 1px solid var(--line); }
+
+    .wizard-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; margin-bottom: 18px; }
+    .wizard-step { padding: 8px; border-radius: 8px; color: var(--muted); background: var(--panel-soft); font-size: 10px; text-align: center; }
+    .wizard-step.active { color: #fff; background: var(--primary); }
+    .wizard-step.done { color: var(--success); background: var(--success-soft); }
+    .source-choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .source-choice { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; text-align: left; }
+    .source-choice:hover, .source-choice.selected { border-color: var(--primary); background: var(--primary-soft); }
+    .source-choice strong { display: block; margin-bottom: 6px; }
+    .source-choice span { color: var(--muted); font-size: 11px; }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 100;
+      display: none;
+      padding: 12px 15px;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--nav);
+      box-shadow: var(--shadow);
+      font-size: 12px;
+    }
+
+    .toast.show { display: block; animation: toast-in .2s ease both; }
+    @keyframes toast-in { from { transform: translateY(8px); opacity: 0; } }
+
+    .mobile-menu { display: none; }
+
+    @media (max-width: 1120px) {
+      .cards-4, .api-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .guide-steps { grid-template-columns: repeat(2, 1fr); }
+      .doc-layout, .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      :root { --sidebar: 0px; }
+      .app-shell { display: block; }
+      .sidebar { width: 260px; transform: translateX(-100%); transition: .2s ease; }
+      .sidebar.open { transform: translateX(0); }
+      .main { grid-column: 1; }
+      .topbar { padding: 0 12px; }
+      .mobile-menu { display: inline-flex; }
+      .top-search { display: none; }
+      .role-select { width: 138px; }
+      .content { padding: 16px 12px 34px; }
+      .page-head { align-items: flex-start; flex-direction: column; }
+      .cards-4, .cards-3, .api-grid, .source-choices { grid-template-columns: 1fr; }
+      .tag-group-grid, .policy-grid, .permission-result { grid-template-columns: 1fr; }
+      .asset-type-grid, .report-grid { grid-template-columns: 1fr; }
+      .asset-catalog-layout, .asset-detail-grid { grid-template-columns: 1fr; }
+      .asset-filter-panel { position: static; }
+      .asset-row { grid-template-columns: 1fr; }
+      .market-layout { grid-template-columns: 1fr; }
+      .category-toggle { display: inline-flex; }
+      .category-panel { display: none; position: static; max-height: none; }
+      .category-panel.open { display: block; }
+      .category-summary { align-items: flex-start; flex-direction: column; }
+      .category-stats { width: 100%; justify-content: flex-start; text-align: left; }
+      .guide-steps { grid-template-columns: 1fr; }
+      .wizard-steps { grid-template-columns: repeat(3, 1fr); }
+      .table-card { overflow-x: auto; }
+      table { min-width: 720px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">DH</div>
+        <div class="brand-copy"><strong>DataHub</strong><span>企业数据资产平台</span></div>
+      </div>
+      <div class="nav-scroll">
+        <div class="nav-group">
+          <div class="nav-label">工作台</div>
+          <button class="nav-item active" data-page="overview"><span class="nav-icon">OV</span>资产总览</button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-label">数据资产</div>
+          <button class="nav-item" data-page="assetCatalog"><span class="nav-icon">ALL</span>资产目录</button>
+          <button class="nav-item" data-page="masterData"><span class="nav-icon">MDM</span>主数据</button>
+          <button class="nav-item" data-page="analyticsData"><span class="nav-icon">ANA</span>分析数据</button>
+          <button class="nav-item" data-page="crawlerData"><span class="nav-icon">CRW</span>爬虫数据</button>
+          <button class="nav-item" data-page="competitorData"><span class="nav-icon">CMP</span>竞品分析</button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-label">BI 分析</div>
+          <button class="nav-item" data-page="biCenter"><span class="nav-icon">BI</span>BI 分析中心</button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-label">数据服务</div>
+          <button class="nav-item" data-page="market"><span class="nav-icon">MK</span>API 市场</button>
+          <button class="nav-item" data-page="apps"><span class="nav-icon">APP</span>我的应用</button>
+          <button class="nav-item" data-page="logs"><span class="nav-icon">LOG</span>调用日志</button>
+          <button class="nav-item" data-page="guide"><span class="nav-icon">DOC</span>接入指南</button>
+        </div>
+        <div class="nav-group" data-role-nav="publisher admin">
+          <div class="nav-label">资产建设</div>
+          <button class="nav-item" data-page="assets"><span class="nav-icon">API</span>API 资产</button>
+          <button class="nav-item" data-page="publish"><span class="nav-icon">NEW</span>发布 API</button>
+        </div>
+        <div class="nav-group" data-role-nav="admin">
+          <div class="nav-label">数据治理</div>
+          <button class="nav-item" data-page="tags"><span class="nav-icon">TAG</span>标签体系</button>
+          <button class="nav-item" data-page="quality"><span class="nav-icon">DQC</span>质量与血缘</button>
+          <button class="nav-item" data-page="roles"><span class="nav-icon">IAM</span>角色权限</button>
+          <button class="nav-item" data-page="simulator"><span class="nav-icon">SIM</span>权限模拟</button>
+          <button class="nav-item" data-page="operations"><span class="nav-icon">OPS</span>运营分析</button>
+          <button class="nav-item" data-page="audit"><span class="nav-icon">AUD</span>审计日志</button>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="role-card"><small>当前身份</small><strong id="sideRole">业务研发 · 北美事业部</strong></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="top-actions">
+          <button class="btn mobile-menu" id="mobileMenu">菜单</button>
+          <div class="top-search"><input id="globalSearch" placeholder="搜索 API、字段、业务场景..." /></div>
+        </div>
+        <div class="top-actions">
+          <select class="role-select" id="roleSelect" aria-label="切换演示角色">
+            <option value="consumer">消费方 · 业务研发</option>
+            <option value="publisher">发布方 · 数据开发</option>
+            <option value="admin">管理员 · 平台运营</option>
+          </select>
+          <button class="btn ghost" title="消息">通知 3</button>
+          <div class="avatar">MS</div>
+        </div>
+      </header>
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modal">
+      <div class="modal-head"><h2 id="modalTitle"></h2><button class="modal-close" id="modalClose">×</button></div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot" id="modalFoot"></div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const apiCategories = [
+      { name: "基础数据", desc: "公司统一的产品、组织、站点、仓库和币种等公共基础资料。", subs: ["产品档案", "分类品牌", "组织站点", "仓库币种"] },
+      { name: "销售", desc: "覆盖订单、支付、退款、价格促销和认证销售指标。", subs: ["订单", "支付退款", "销售指标", "价格促销"] },
+      { name: "供应链", desc: "覆盖供应商、采购、供应计划、可供量、交期和供应绩效。", subs: ["供应商", "采购订单", "供应计划", "交期绩效"] },
+      { name: "广告", desc: "覆盖广告活动、关键词、投放花费、转化和效果指标。", subs: ["广告结构", "关键词", "投放数据", "效果指标"] },
+      { name: "库存", desc: "覆盖可售、仓库、在途、周转、健康度和库存调整。", subs: ["实时库存", "在途库存", "库存健康", "库存流水"] },
+      { name: "物流", desc: "覆盖发货、轨迹、渠道、运费、妥投时效和异常包裹。", subs: ["发货履约", "物流轨迹", "渠道运费", "时效异常"] },
+      { name: "市场竞品", desc: "覆盖竞品档案、价格排名、品类趋势和竞争格局。", subs: ["竞品档案", "价格排名", "品类趋势", "竞争分析"] },
+      { name: "用户 / VOC", desc: "覆盖评论明细、主题情绪、用户痛点和需求洞察。", subs: ["评论明细", "主题情绪", "痛点需求"] },
+      { name: "内容知识", desc: "覆盖产品卖点、说明书、Listing、素材和合规证据。", subs: ["产品卖点", "说明书", "Listing 素材", "合规知识"] }
+    ];
+
+    const categoryOwners = {
+      "基础数据": "主数据组", "销售": "经营分析组", "供应链": "供应链数据组",
+      "广告": "广告数据组", "库存": "库存数据组", "物流": "物流数据组",
+      "市场竞品": "市场洞察组", "用户 / VOC": "用户洞察组", "内容知识": "内容中台组"
+    };
+
+    function apiDef(id, name, category, subcategory, endpoint, desc, method = "GET", access = "已授权", status = "已认证", calls = "1.2万") {
+      const pathMatch = endpoint.match(/\{([^}]+)\}/);
+      return {
+        id, name, category, subcategory, domain: category, endpoint, desc, method, access, status, calls,
+        owner: categoryOwners[category], sla: status === "试运行" ? "99.50%" : "99.90%",
+        latency: method === "POST" ? "146ms" : "92ms", param: pathMatch ? pathMatch[1] : method === "POST" ? "query" : "id",
+        tags: [category, subcategory, status, access, method === "POST" ? "查询服务" : "读取服务"]
+      };
+    }
+
+    const apis = [
+      apiDef("product", "SKU / PN 产品档案", "基础数据", "产品档案", "/v1/products/{sku}", "查询产品主档、PN、规格和跨站点编码。", "GET", "已授权", "已认证", "12.8万"),
+      apiDef("spu-map", "SKU / SPU 关系查询", "基础数据", "产品档案", "/v1/products/{sku}/relations", "查询 SKU、PN、SPU 和套装关系。"),
+      apiDef("category-tree", "标准品类树", "基础数据", "分类品牌", "/v1/master/categories", "查询公司标准品类层级、路径和启用状态。"),
+      apiDef("brand", "品牌主数据", "基础数据", "分类品牌", "/v1/master/brands/{brand_code}", "查询品牌、所属公司和授权市场。"),
+      apiDef("sites", "站点与店铺", "基础数据", "组织站点", "/v1/master/sites", "查询业务线、国家站点、店铺和组织关系。"),
+      apiDef("warehouse", "仓库与币种汇率", "基础数据", "仓库币种", "/v1/master/warehouses", "查询仓库基础信息、币种和日汇率。"),
+      apiDef("orders", "销售订单列表", "销售", "订单", "/v1/sales/orders", "按站点、店铺、时间和状态查询销售订单。", "POST", "已授权", "已认证", "18.6万"),
+      apiDef("order-detail", "订单与商品明细", "销售", "订单", "/v1/sales/orders/{order_id}", "查询订单、订单行、商品、税费和履约信息。"),
+      apiDef("payments", "支付流水查询", "销售", "支付退款", "/v1/sales/payments", "查询支付方式、金额、币种和支付状态。", "POST"),
+      apiDef("refunds", "退款明细查询", "销售", "支付退款", "/v1/sales/refunds", "查询退款原因、金额、商品和处理状态。", "POST"),
+      apiDef("metric", "认证销售指标查询", "销售", "销售指标", "/v1/metrics/sales/query", "查询 GMV、净销售额、订单数、买家数和利润。", "POST", "已授权", "已认证", "9.6万"),
+      apiDef("promotions", "商品价格与促销", "销售", "价格促销", "/v1/sales/promotions", "查询商品售价、折扣、促销活动和有效期。", "POST"),
+      apiDef("suppliers", "供应商档案", "供应链", "供应商", "/v1/supply/suppliers/{supplier_id}", "查询供应商资质、品类和合作状态。"),
+      apiDef("purchase-orders", "采购订单查询", "供应链", "采购订单", "/v1/supply/purchase-orders", "查询采购订单、商品数量、金额和状态。", "POST", "角色受限"),
+      apiDef("supply-plan", "供应计划查询", "供应链", "供应计划", "/v1/supply/plans", "查询 SKU 周度供应计划和计划版本。", "POST", "角色受限"),
+      apiDef("supply-forecast", "可供量预测", "供应链", "供应计划", "/v1/supply/available-forecast", "查询供应商未来可供量、缺口和风险。", "POST", "角色受限", "试运行"),
+      apiDef("arrival", "预计到货与采购交期", "供应链", "交期绩效", "/v1/supply/arrivals", "查询预计到货、实际到货和交期偏差。", "POST", "角色受限"),
+      apiDef("supplier-performance", "供应商绩效", "供应链", "交期绩效", "/v1/supply/supplier-performance", "查询准时交付率、质量和响应绩效。", "POST", "角色受限"),
+      apiDef("ad-campaigns", "广告活动查询", "广告", "广告结构", "/v1/ads/campaigns", "查询广告活动、预算、状态和投放策略。", "POST"),
+      apiDef("ad-groups", "广告组与投放商品", "广告", "广告结构", "/v1/ads/ad-groups", "查询广告组、投放商品和匹配方式。", "POST"),
+      apiDef("keywords", "关键词与搜索词", "广告", "关键词", "/v1/ads/keywords", "查询关键词、搜索词、竞价和匹配类型。", "POST"),
+      apiDef("ad-spend", "广告花费与转化", "广告", "投放数据", "/v1/ads/performance", "查询展示、点击、花费、订单和销售额。", "POST", "已授权", "已认证", "8.4万"),
+      apiDef("ad-metrics", "ACOS / ROAS 指标", "广告", "效果指标", "/v1/ads/metrics", "查询 ACOS、ROAS、CTR、CPC 和 CVR。", "POST"),
+      apiDef("inventory", "实时可售库存", "库存", "实时库存", "/v1/inventory/available", "查询仓库 SKU 可售、锁定和不可售库存。", "GET", "角色受限", "已认证", "7.4万"),
+      apiDef("warehouse-stock", "仓库库存快照", "库存", "实时库存", "/v1/inventory/snapshot", "查询仓库日结库存和库存状态。", "POST", "角色受限"),
+      apiDef("inbound-stock", "在途库存查询", "库存", "在途库存", "/v1/inventory/inbound", "查询采购、调拨和头程在途库存。", "POST", "角色受限"),
+      apiDef("inventory-health", "库存健康与可售天数", "库存", "库存健康", "/v1/inventory/health", "查询覆盖天数、缺货、滞销和健康标签。", "POST", "角色受限"),
+      apiDef("inventory-turnover", "库存周转指标", "库存", "库存健康", "/v1/inventory/turnover", "查询周转率、周转天数和库存资金。", "POST", "角色受限"),
+      apiDef("inventory-ledger", "库存调整流水", "库存", "库存流水", "/v1/inventory/ledger", "查询入库、出库、盘点和调整记录。", "POST", "角色受限"),
+      apiDef("shipments", "发货单查询", "物流", "发货履约", "/v1/logistics/shipments", "查询发货单、包裹、承运商和发货状态。", "POST"),
+      apiDef("tracking", "物流轨迹查询", "物流", "物流轨迹", "/v1/logistics/tracking/{tracking_no}", "查询包裹节点、当前状态和预计送达。"),
+      apiDef("channels", "物流渠道查询", "物流", "渠道运费", "/v1/logistics/channels", "查询渠道、服务等级、覆盖国家和限制。"),
+      apiDef("freight", "运费明细查询", "物流", "渠道运费", "/v1/logistics/freight", "查询头程、尾程和附加费用。", "POST", "角色受限"),
+      apiDef("delivery-sla", "妥投时效指标", "物流", "时效异常", "/v1/logistics/delivery-sla", "查询平均妥投、准时率和时效分布。", "POST"),
+      apiDef("logistics-exceptions", "异常包裹查询", "物流", "时效异常", "/v1/logistics/exceptions", "查询延误、丢件、破损和退回包裹。", "POST"),
+      apiDef("competitor", "竞品档案查询", "市场竞品", "竞品档案", "/v1/competitors/{asin}", "查询竞品 ASIN、品牌、卖点和关联品类。", "GET", "已授权", "试运行", "2.1万"),
+      apiDef("competitor-rank", "竞品价格与排名", "市场竞品", "价格排名", "/v1/competitors/rankings", "查询竞品价格、BSR、评分和排名趋势。", "POST"),
+      apiDef("category-trend", "品类趋势洞察", "市场竞品", "品类趋势", "/v1/market/category-trends", "查询品类规模、增长、季节性和价格带。", "POST", "已授权", "试运行"),
+      apiDef("competition", "竞争格局分析", "市场竞品", "竞争分析", "/v1/market/competition", "查询品牌份额、竞争密度和机会评分。", "POST", "已授权", "试运行"),
+      apiDef("reviews", "评论明细查询", "用户 / VOC", "评论明细", "/v1/voc/reviews", "按 ASIN、SKU、站点、星级和时间查询评论。", "POST"),
+      apiDef("voc", "评论主题与情绪", "用户 / VOC", "主题情绪", "/v1/voc/insights", "查询主题、情绪、样本数和代表评论。", "POST", "已授权", "试运行", "1.7万"),
+      apiDef("pain-points", "用户痛点与需求", "用户 / VOC", "痛点需求", "/v1/voc/pain-points", "查询用户痛点、需求场景和产品改进机会。", "POST", "已授权", "试运行"),
+      apiDef("selling-points", "产品卖点与证据", "内容知识", "产品卖点", "/v1/content/selling-points/{sku}", "查询核心卖点、差异点和证据素材。"),
+      apiDef("manuals", "产品说明书检索", "内容知识", "说明书", "/v1/content/manuals/search", "检索说明书章节、操作步骤和注意事项。", "POST"),
+      apiDef("listing", "Listing 与素材查询", "内容知识", "Listing 素材", "/v1/content/listings", "查询多站点 Listing、图片文案和素材。", "POST"),
+      apiDef("content", "合规知识与内容检索", "内容知识", "合规知识", "/v1/knowledge/search", "检索合规规则、认证、证据和内容知识。", "POST", "角色受限", "已认证", "3.2万")
+    ];
+
+    const tagGroups = [
+      { name: "业务域", scope: "API", tags: ["基础数据", "销售", "供应链", "广告", "库存", "物流", "市场竞品", "用户 / VOC", "内容知识"] },
+      { name: "数据等级", scope: "API / 字段", tags: ["L1 内部公开", "L2 内部受限", "L3 敏感", "L4 高敏"] },
+      { name: "数据时效", scope: "API", tags: ["实时", "分钟级", "小时级", "T+1"] },
+      { name: "服务形态", scope: "API", tags: ["读取服务", "查询服务", "认证指标", "明细数据"] },
+      { name: "字段特征", scope: "字段", tags: ["主键", "组织范围", "敏感成本", "个人信息", "业务编码"] },
+      { name: "治理状态", scope: "API / 字段", tags: ["已认证", "试运行", "待治理", "已废弃"] }
+    ];
+
+    function assetDef(id, name, type, domain, owner, source, freshness, quality, sensitivity, records, desc, tags = [], api = "", bi = "") {
+      return { id, name, type, domain, owner, source, freshness, quality, sensitivity, records, desc, tags, api, bi, status: quality >= 95 ? "已认证" : quality >= 90 ? "治理中" : "需改进" };
+    }
+
+    const dataAssets = [
+      assetDef("mdm-product", "SKU / PN / SPU 产品主数据", "主数据", "产品", "主数据组", "PIM + ERP", "实时", 99.8, "L1 内部公开", "18.6万", "统一产品编码、规格、型号、生命周期及跨站点映射。", ["主键", "认证资产"], "product", "bi-product"),
+      assetDef("mdm-category", "标准品类树", "主数据", "产品", "主数据组", "PIM", "每日", 99.6, "L1 内部公开", "2,846", "公司统一品类层级、路径、负责人和启用状态。", ["标准维度", "认证资产"], "category-tree", "bi-product"),
+      assetDef("mdm-brand", "品牌主数据", "主数据", "产品", "品牌数据组", "PIM + CRM", "每日", 98.9, "L1 内部公开", "1,238", "品牌、所属公司、授权市场和经营关系。", ["品牌", "认证资产"], "brand", "bi-market"),
+      assetDef("mdm-supplier", "供应商主数据", "主数据", "供应链", "供应链数据组", "ERP / SRM", "每小时", 97.8, "L2 内部受限", "3,421", "供应商资质、品类、合作状态和履约属性。", ["供应商", "组织范围"], "supplier", "bi-supply"),
+      assetDef("mdm-warehouse", "仓库与站点主数据", "主数据", "供应链", "供应链数据组", "WMS + OMS", "每小时", 99.2, "L1 内部公开", "426", "仓库、国家站点、店铺、币种和组织映射。", ["组织范围", "标准维度"], "warehouse", "bi-inventory"),
+      assetDef("ana-sales", "DWS 销售经营日汇总", "分析数据", "销售", "经营分析组", "ODS 订单 + 支付", "每小时", 99.5, "L2 内部受限", "8,520万", "按日期、站点、店铺、SKU 汇总 GMV、净销售额、订单和利润。", ["认证指标", "小时级"], "sales-metrics", "bi-management"),
+      assetDef("ana-ad", "DWS 广告效果日汇总", "分析数据", "广告", "广告数据组", "Amazon Ads", "每小时", 98.8, "L2 内部受限", "2,160万", "广告活动、关键词、花费、转化、ACOS 和 ROAS 指标。", ["认证指标", "广告"], "ad-kpi", "bi-ad"),
+      assetDef("ana-inventory", "DWS 库存健康快照", "分析数据", "库存", "库存数据组", "WMS + ERP", "5 分钟", 99.4, "L2 内部受限", "1,860万", "库存可售、在途、覆盖天数、缺货和滞销状态。", ["实时", "认证资产"], "inventory-health", "bi-inventory"),
+      assetDef("ana-supply", "DWS 供应计划与交期", "分析数据", "供应链", "供应链数据组", "ERP + SRM", "每小时", 96.9, "L2 内部受限", "680万", "供应计划、采购订单、预计到货、交期偏差和供应商绩效。", ["供应链", "预测"], "supply-plan", "bi-supply"),
+      assetDef("ana-profit", "ADS SKU 利润认证指标", "分析数据", "财务", "财务数据组", "销售 + 成本中心", "T+1", 99.7, "L3 敏感", "960万", "SKU、站点和店铺维度的收入、成本、费用与利润。", ["认证指标", "敏感成本"], "sales-metrics", "bi-management"),
+      assetDef("crawl-listing", "Amazon Listing 采集明细", "爬虫数据", "市场", "采集平台组", "Amazon Web", "每日", 96.2, "L2 内部受限", "1,280万", "ASIN 标题、五点、图片、A+、类目和品牌页面采集结果。", ["外部数据", "Listing"], "", "bi-market"),
+      assetDef("crawl-price", "竞品价格与 BSR 快照", "爬虫数据", "市场", "采集平台组", "Amazon Web", "每 6 小时", 95.6, "L2 内部受限", "4,620万", "竞品价格、优惠、BSR、评分、评论量和库存状态快照。", ["外部数据", "价格监控"], "competitor-price", "bi-market"),
+      assetDef("crawl-review", "Amazon 评论采集明细", "爬虫数据", "用户洞察", "采集平台组", "Amazon Review", "每日", 94.8, "L2 内部受限", "8,960万", "评论文本、星级、变体、时间、站点和采集状态。", ["外部数据", "VOC"], "reviews", "bi-voc"),
+      assetDef("crawl-task", "爬虫任务运行记录", "爬虫数据", "平台", "采集平台组", "Crawler Scheduler", "实时", 98.1, "L2 内部受限", "326万", "采集任务、批次、成功率、封禁状态和异常原因。", ["运行日志", "质量监控"]),
+      assetDef("cmp-profile", "竞品统一档案", "竞品分析", "市场", "市场洞察组", "Listing + 品牌主数据", "每日", 97.4, "L2 内部受限", "28.4万", "竞品 ASIN、品牌、卖点、规格、关联品类和对标关系。", ["竞品", "分析模型"], "competitor", "bi-market"),
+      assetDef("cmp-category", "品类趋势与竞争格局", "竞品分析", "市场", "市场洞察组", "价格 BSR + 销售估算", "每周", 93.8, "L2 内部受限", "18.6万", "品类规模、增长、价格带、品牌份额、竞争密度和机会评分。", ["品类洞察", "模型结果"], "category-trend", "bi-market"),
+      assetDef("cmp-voc", "竞品 VOC 主题与痛点", "竞品分析", "用户洞察", "用户洞察组", "评论明细 + NLP", "每日", 94.5, "L2 内部受限", "620万", "评论主题、情绪、用户痛点、需求场景和改进机会。", ["VOC", "模型结果"], "review-topics", "bi-voc"),
+      assetDef("cmp-opportunity", "产品机会评分", "竞品分析", "产品", "产品策略组", "品类 + VOC + 经营", "每周", 91.8, "L2 内部受限", "12.8万", "综合市场空间、竞争强度、用户痛点和公司能力形成机会评分。", ["机会评分", "待认证"], "", "bi-product")
+    ];
+
+    const biReports = [
+      { id: "bi-management", name: "公司经营管理驾驶舱", category: "管理", owner: "经营分析组", update: "每小时", status: "已认证", role: "管理层 / 财务分析", dataset: "ana-sales", desc: "GMV、净销售、利润、库存和现金效率的公司级经营视图。" },
+      { id: "bi-sales", name: "销售与店铺经营分析", category: "销售", owner: "经营分析组", update: "每小时", status: "已认证", role: "运营分析师", dataset: "ana-sales", desc: "站点、店铺、SKU 和时间维度的销售趋势及异常定位。" },
+      { id: "bi-ad", name: "广告投放效果分析", category: "广告", owner: "广告数据组", update: "每小时", status: "已认证", role: "广告运营", dataset: "ana-ad", desc: "花费、转化、ACOS、ROAS、关键词与搜索词表现。" },
+      { id: "bi-inventory", name: "库存健康与补货驾驶舱", category: "库存", owner: "库存数据组", update: "5 分钟", status: "已认证", role: "供应链计划", dataset: "ana-inventory", desc: "可售、在途、覆盖天数、缺货风险和滞销库存。" },
+      { id: "bi-supply", name: "供应链履约与交期分析", category: "供应链", owner: "供应链数据组", update: "每小时", status: "已认证", role: "供应链计划", dataset: "ana-supply", desc: "采购、到货、交期偏差、可供量和供应商绩效。" },
+      { id: "bi-market", name: "市场与竞品洞察中心", category: "产品与市场", owner: "市场洞察组", update: "每日", status: "试运行", role: "产品经理 / 市场分析", dataset: "cmp-category", desc: "竞品价格、排名、品类趋势、竞争格局与产品机会。" },
+      { id: "bi-voc", name: "用户 VOC 与产品机会", category: "产品与市场", owner: "用户洞察组", update: "每日", status: "试运行", role: "产品经理 / 用户研究", dataset: "cmp-voc", desc: "用户主题、情绪、痛点、需求和代表性评论。" },
+      { id: "bi-product", name: "产品矩阵与生命周期分析", category: "产品与市场", owner: "产品数据组", update: "每日", status: "已认证", role: "产品经理", dataset: "mdm-product", desc: "产品矩阵、生命周期、品类布局与跨站点表现。" }
+    ];
+
+    const state = {
+      page: "overview",
+      role: localStorage.getItem("datahub-demo-role") || "admin",
+      selectedApi: apis[0],
+      detailTab: "docs",
+      marketCategory: "",
+      marketSubcategory: "",
+      marketKeyword: "",
+      marketAccess: "",
+      marketStatus: "",
+      marketMethod: "",
+      marketTag: "",
+      marketOpenCategories: apiCategories.map(category => category.name),
+      assetType: "",
+      assetDomain: "",
+      assetKeyword: "",
+      selectedAsset: dataAssets[0],
+      assetTab: "overview",
+      selectedReport: biReports[0],
+      apps: [
+        { name: "运营经营驾驶舱", owner: "北美运营研发", env: "生产", apiCount: 4, clientId: "app_ops_us_8f21", status: "正常" },
+        { name: "Listing Content Agent", owner: "AI 应用组", env: "测试", apiCount: 3, clientId: "app_ai_content_3d19", status: "正常" }
+      ],
+      wizardType: "existing",
+      wizardStep: 0
+    };
+
+    const content = document.getElementById("content");
+    const sidebar = document.getElementById("sidebar");
+    const backdrop = document.getElementById("modalBackdrop");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBody = document.getElementById("modalBody");
+    const modalFoot = document.getElementById("modalFoot");
+    const toast = document.getElementById("toast");
+
+    const pageMeta = {
+      overview: ["资产总览", "统一发现、治理、分析和服务公司数据资产"],
+      assetCatalog: ["资产目录", "统一检索主数据、分析数据、爬虫数据和竞品分析资产"],
+      masterData: ["主数据", "统一管理产品、品类、品牌、供应商、仓库和组织标准"],
+      analyticsData: ["分析数据", "沉淀销售、广告、库存、供应链和财务认证数据集"],
+      crawlerData: ["爬虫数据", "管理外部页面、价格、排名、评论和采集任务数据"],
+      competitorData: ["竞品分析", "沉淀竞品档案、品类趋势、VOC 和产品机会模型"],
+      assetDetail: ["资产详情", "查看资产口径、字段、质量、血缘和服务关系"],
+      biCenter: ["BI 分析中心", "统一发现公司经营驾驶舱和业务专题分析"],
+      reportDetail: ["BI 报表详情", "查看指标、趋势、数据范围和关联资产"],
+      market: ["API 市场", "浏览认证数据服务，按角色自动获得调用权限"],
+      apps: ["我的应用", "管理应用凭证、授权 API、环境与配额"],
+      logs: ["调用日志", "追踪请求状态、耗时、Trace ID 和错误原因"],
+      guide: ["接入指南", "从创建应用到生产调用的完整操作说明"],
+      assets: ["API 资产", "管理已有 API 与数据生成 API 的全生命周期"],
+      publish: ["发布 API", "登记已有服务，或将数据库/数仓数据生成标准 API"],
+      tags: ["标签体系", "统一管理 API 与字段的业务、敏感和治理标签"],
+      quality: ["质量与血缘", "监控数据质量、更新状态和上下游加工链路"],
+      roles: ["角色权限", "通过岗位角色权限包自动分配 API 访问范围"],
+      simulator: ["权限模拟", "验证用户、角色和属性组合后的最终数据访问结果"],
+      operations: ["运营分析", "监控平台调用、成功率、延迟、应用和 API 价值"],
+      audit: ["审计日志", "追踪发布、权限、凭证和调用行为"]
+    };
+
+    function pageHead(actions = "") {
+      const [title, sub] = pageMeta[state.page];
+      return `<div class="page-head"><div><h1>${title}</h1><p>${sub}</p></div><div class="top-actions">${actions}</div></div>`;
+    }
+
+    function badge(text) {
+      const tone = text.includes("认证") || text === "正常" || text === "已授权" || text === "已发布" ? "success"
+        : text.includes("受限") || text.includes("试运行") || text.includes("废弃") ? "warning"
+        : text.includes("失败") || text.includes("下线") || text.includes("拒绝") ? "danger" : "info";
+      return `<span class="pill ${tone}">${text}</span>`;
+    }
+
+    function renderOverview() {
+      const certified = dataAssets.filter(asset => asset.status === "已认证").length;
+      const avgQuality = (dataAssets.reduce((sum, asset) => sum + asset.quality, 0) / dataAssets.length).toFixed(1);
+      content.innerHTML = pageHead(`<button class="btn" data-go="biCenter">进入 BI 分析</button><button class="btn primary" data-go="assetCatalog">浏览数据资产</button>`) + `
+        <div class="cards-4">
+          <div class="card stat-card"><div class="stat-label">数据资产</div><div class="stat-value">1,286</div><div class="stat-meta">本月新增 36 项</div></div>
+          <div class="card stat-card"><div class="stat-label">认证资产</div><div class="stat-value">${certified}</div><div class="stat-meta">核心资产认证率 82%</div></div>
+          <div class="card stat-card"><div class="stat-label">平均质量分</div><div class="stat-value">${avgQuality}</div><div class="stat-meta">较上月提升 1.6 分</div></div>
+          <div class="card stat-card"><div class="stat-label">活跃 BI / API</div><div class="stat-value">${biReports.length} / ${apis.length}</div><div class="stat-meta">覆盖 9 条业务线</div></div>
+        </div>
+        <div class="asset-type-grid" style="margin-top:14px">
+          ${["主数据","分析数据","爬虫数据","竞品分析","BI资产"].map((type, index) => {
+            const count = type === "BI资产" ? biReports.length : dataAssets.filter(asset => asset.type === type).length;
+            return `<button class="asset-type-card" data-overview-type="${type}"><span class="pill ${index === 0 ? "success" : "info"}">${type}</span><strong>${["统一业务标准","经营分析底座","外部数据采集","市场洞察模型","可视化分析"][index]}</strong><div class="stat-value">${count}</div><small>查看全部资产 →</small></button>`;
+          }).join("")}
+        </div>
+        <div class="grid-2" style="margin-top:14px">
+          <div class="card"><div class="card-head"><strong>热门数据资产</strong><button class="btn ghost" data-go="assetCatalog">查看全部</button></div>
+            <div class="card-body list">${dataAssets.slice(5,10).map(asset => `<button class="list-row" data-asset="${asset.id}" style="width:100%;border:0;background:transparent;text-align:left"><div><div class="list-title">${asset.name}</div><div class="list-sub">${asset.type} · ${asset.domain} · ${asset.owner}</div></div><div style="text-align:right">${badge(asset.status)}<div class="list-sub" style="margin-top:4px">质量 ${asset.quality}</div></div></button>`).join("")}</div>
+          </div>
+          <div class="card"><div class="card-head"><strong>质量与更新提醒</strong><button class="btn ghost" data-go="quality">查看治理</button></div>
+            <div class="card-body list">
+              <div class="list-row"><div><div class="list-title">产品机会评分质量下降</div><div class="list-sub">完整性 88.6%，缺失 412 条竞品映射</div></div>${badge("需改进")}</div>
+              <div class="list-row"><div><div class="list-title">Amazon 评论采集延迟</div><div class="list-sub">DE 站点较计划延迟 2 小时</div></div>${badge("关注")}</div>
+              <div class="list-row"><div><div class="list-title">销售经营日汇总已认证</div><div class="list-sub">新增利润口径并完成 12 项质量校验</div></div>${badge("已认证")}</div>
+              <div class="list-row"><div><div class="list-title">库存血缘新增 WMS 节点</div><div class="list-sub">已同步关联库存 API 与补货驾驶舱</div></div><span class="pill info">血缘</span></div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function currentAssetType() {
+      const pageTypes = { masterData: "主数据", analyticsData: "分析数据", crawlerData: "爬虫数据", competitorData: "竞品分析" };
+      return pageTypes[state.page] || state.assetType;
+    }
+
+    function currentAssetList() {
+      const type = currentAssetType();
+      const keyword = state.assetKeyword.toLowerCase();
+      return dataAssets.filter(asset =>
+        (!type || asset.type === type) &&
+        (!state.assetDomain || asset.domain === state.assetDomain) &&
+        (!keyword || `${asset.name}${asset.desc}${asset.owner}${asset.tags.join("")}`.toLowerCase().includes(keyword))
+      );
+    }
+
+    function assetTypeNavigation() {
+      const activeType = currentAssetType();
+      return ["主数据","分析数据","爬虫数据","竞品分析"].map(type => `
+        <button class="asset-filter-option ${activeType === type ? "active" : ""}" data-asset-type="${type}">
+          <span>${type}</span><span class="category-count">${dataAssets.filter(asset => asset.type === type).length}</span>
+        </button>`).join("");
+    }
+
+    function renderAssetCatalog() {
+      const list = currentAssetList();
+      const domains = [...new Set(dataAssets.map(asset => asset.domain))];
+      content.innerHTML = pageHead(`<span class="pill info">${list.length} 项资产</span><button class="btn primary" data-go="market">查看数据服务</button>`) + `
+        <div class="asset-type-grid">
+          ${["主数据","分析数据","爬虫数据","竞品分析"].map(type => `<button class="asset-type-card ${currentAssetType() === type ? "active" : ""}" data-asset-type="${type}"><span class="pill">${type}</span><strong>${dataAssets.filter(asset => asset.type === type).length} 项资产</strong><small>${dataAssets.filter(asset => asset.type === type && asset.status === "已认证").length} 项已认证</small></button>`).join("")}
+          <button class="asset-type-card" data-go="biCenter"><span class="pill purple">BI 资产</span><strong>${biReports.length} 个报表</strong><small>进入 BI 分析中心</small></button>
+        </div>
+        <div class="asset-catalog-layout">
+          <aside class="card asset-filter-panel">
+            <div class="asset-filter-group"><strong>资产类型</strong><button class="asset-filter-option ${!currentAssetType() ? "active" : ""}" data-asset-type=""><span>全部资产</span><span class="category-count">${dataAssets.length}</span></button>${assetTypeNavigation()}</div>
+            <div class="asset-filter-group"><strong>业务域</strong><button class="asset-filter-option ${!state.assetDomain ? "active" : ""}" data-asset-domain="">全部业务域</button>${domains.map(domain => `<button class="asset-filter-option ${state.assetDomain === domain ? "active" : ""}" data-asset-domain="${domain}">${domain}</button>`).join("")}</div>
+          </aside>
+          <div>
+            <div class="filterbar"><input class="field grow" id="assetSearch" value="${state.assetKeyword}" placeholder="搜索资产名称、Owner、标签或业务口径" /></div>
+            <div class="asset-list">
+              ${list.length ? list.map(asset => `<button class="asset-row" data-asset="${asset.id}">
+                <div class="asset-row-title"><strong>${asset.name}</strong><small>${asset.desc}</small><div class="tag-cloud" style="margin-top:7px">${asset.tags.slice(0,2).map(tag => `<span class="pill">${tag}</span>`).join("")}</div></div>
+                <div class="asset-cell"><small>类型 / 业务域</small><strong>${asset.type}<br/>${asset.domain}</strong></div>
+                <div class="asset-cell"><small>Owner / 来源</small><strong>${asset.owner}<br/>${asset.source}</strong></div>
+                <div class="asset-cell"><small>更新 / 数据量</small><strong>${asset.freshness}<br/>${asset.records}</strong></div>
+                <div class="asset-cell"><small>质量分</small><strong>${asset.quality}</strong><div class="quality-track"><span style="width:${asset.quality}%"></span></div><div style="margin-top:5px">${badge(asset.status)}</div></div>
+                <span>›</span>
+              </button>`).join("") : `<div class="card empty"><strong>没有匹配的数据资产</strong><p>请调整关键词或业务域。</p></div>`}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function assetFields(asset) {
+      const common = [["asset_id","string","资产内唯一标识","主键","否"],["business_date","date","业务日期，YYYY-MM-DD","标准维度","否"],["site","string","国家站点编码","组织范围","否"]];
+      const typeFields = {
+        "主数据": [["standard_code","string","公司统一标准编码","业务编码","否"],["standard_name","string","标准业务名称","L1 内部公开","否"],["status","enum","ACTIVE / INACTIVE","治理状态","否"]],
+        "分析数据": [["metric_value","decimal(18,4)","认证指标值","认证指标","否"],["currency","string","ISO 4217 币种","标准维度","是"],["data_version","string","指标计算版本","审计","否"]],
+        "爬虫数据": [["source_url","string","外部采集页面地址","外部数据","否"],["crawl_time","datetime","最近成功采集时间","数据时效","否"],["raw_payload","json","原始页面解析结果","L2 内部受限","是"]],
+        "竞品分析": [["competitor_id","string","统一竞品标识","业务编码","否"],["score","decimal(10,4)","模型分析得分","模型结果","是"],["model_version","string","分析模型版本","审计","否"]]
+      };
+      return [...common, ...(typeFields[asset.type] || typeFields["分析数据"])];
+    }
+
+    function renderAssetDetail() {
+      const asset = state.selectedAsset;
+      content.innerHTML = `<div class="breadcrumb"><button data-go="assetCatalog">资产目录</button> / ${asset.type} / ${asset.name}</div>
+        <div class="card detail-hero">
+          <div class="detail-title"><div><div>${badge(asset.status)} <span class="pill">${asset.type}</span> <span class="pill">${asset.sensitivity}</span></div><h1>${asset.name}</h1><p style="color:var(--muted);margin:0">${asset.desc}</p></div><button class="btn primary" data-go="${asset.api ? "market" : "biCenter"}">${asset.api ? "查看关联 API" : "查看关联分析"}</button></div>
+          <div class="meta-row"><span>资产 ID <strong>${asset.id}</strong></span><span>Owner <strong>${asset.owner}</strong></span><span>来源 <strong>${asset.source}</strong></span><span>更新 <strong>${asset.freshness}</strong></span><span>数据量 <strong>${asset.records}</strong></span><span>质量 <strong>${asset.quality}</strong></span></div>
+          <div class="tabs">
+            ${[["overview","资产概览"],["fields","字段结构"],["quality","质量规则"],["lineage","数据血缘"],["versions","版本记录"]].map(tab => `<button class="tab ${state.assetTab === tab[0] ? "active" : ""}" data-asset-tab="${tab[0]}">${tab[1]}</button>`).join("")}
+          </div>
+        </div>
+        <div id="assetDetailBody">${assetDetailBody(asset)}</div>`;
+    }
+
+    function assetDetailBody(asset) {
+      if (state.assetTab === "fields") return `<div class="card table-card" style="margin-top:14px"><div class="card-head"><strong>字段结构</strong><span class="pill">${assetFields(asset).length} 个核心字段</span></div><table><thead><tr><th>字段名</th><th>类型</th><th>业务说明</th><th>字段标签</th><th>可空</th></tr></thead><tbody>${assetFields(asset).map(field => `<tr><td><code>${field[0]}</code></td><td>${field[1]}</td><td>${field[2]}</td><td><span class="pill">${field[3]}</span></td><td>${field[4]}</td></tr>`).join("")}</tbody></table></div>`;
+      if (state.assetTab === "quality") return `<div class="cards-4" style="margin-top:14px"><div class="card stat-card"><div class="stat-label">综合质量分</div><div class="stat-value">${asset.quality}</div><div class="stat-meta">目标 ≥ 95</div></div><div class="card stat-card"><div class="stat-label">完整性</div><div class="stat-value">${Math.min(99.9, asset.quality + .4).toFixed(1)}%</div><div class="stat-meta">空值率受控</div></div><div class="card stat-card"><div class="stat-label">及时性</div><div class="stat-value">${asset.freshness}</div><div class="stat-meta">最近更新正常</div></div><div class="card stat-card"><div class="stat-label">质量规则</div><div class="stat-value">12</div><div class="stat-meta">11 通过 / 1 关注</div></div></div><div class="card table-card" style="margin-top:14px"><table><thead><tr><th>规则</th><th>维度</th><th>目标</th><th>结果</th><th>状态</th></tr></thead><tbody><tr><td>主键唯一性</td><td>唯一性</td><td>100%</td><td>100%</td><td>${badge("通过")}</td></tr><tr><td>核心字段完整性</td><td>完整性</td><td>≥ 99%</td><td>${asset.quality}%</td><td>${badge(asset.quality >= 95 ? "通过" : "关注")}</td></tr><tr><td>更新及时性</td><td>及时性</td><td>${asset.freshness}</td><td>达标</td><td>${badge("通过")}</td></tr></tbody></table></div>`;
+      if (state.assetTab === "lineage") return `<div class="card" style="margin-top:14px"><div class="card-head"><strong>端到端数据血缘</strong><span class="pill info">自动采集</span></div><div class="card-body"><div class="lineage-flow"><div class="lineage-node"><strong>源系统</strong><small>${asset.source}</small></div><span class="lineage-arrow">→</span><div class="lineage-node"><strong>ODS 原始层</strong><small>ods_${asset.id.replaceAll("-","_")}</small></div><span class="lineage-arrow">→</span><div class="lineage-node"><strong>${asset.type}</strong><small>${asset.name}</small></div><span class="lineage-arrow">→</span><div class="lineage-node"><strong>数据服务</strong><small>${asset.api ? "API · " + asset.api : "数据集服务"}</small></div><span class="lineage-arrow">→</span><div class="lineage-node"><strong>消费应用</strong><small>${asset.bi ? "BI · " + asset.bi : "业务分析"}</small></div></div></div></div>`;
+      if (state.assetTab === "versions") return `<div class="card table-card" style="margin-top:14px"><table><thead><tr><th>版本</th><th>生效时间</th><th>变更内容</th><th>负责人</th><th>状态</th></tr></thead><tbody><tr><td>v3.2</td><td>2026-07-28</td><td>新增质量规则和站点维度</td><td>${asset.owner}</td><td>${badge("当前版本")}</td></tr><tr><td>v3.1</td><td>2026-06-12</td><td>统一字段命名与敏感等级</td><td>${asset.owner}</td><td>历史版本</td></tr></tbody></table></div>`;
+      const relatedApi = apis.find(api => api.id === asset.api);
+      const relatedBi = biReports.find(report => report.id === asset.bi);
+      return `<div class="asset-detail-grid" style="margin-top:14px"><div><div class="card"><div class="card-head"><strong>业务定义与使用说明</strong></div><div class="card-body"><p style="margin-top:0;line-height:1.8">${asset.desc}</p><div class="notice">该资产以 <strong>${asset.id}</strong> 作为统一资产 ID，字段标签、行列权限、API 和 BI 报表均继承该资产的治理策略。</div></div></div><div class="card" style="margin-top:14px"><div class="card-head"><strong>加工链路概览</strong></div><div class="card-body"><div class="lineage-flow"><div class="lineage-node"><strong>${asset.source}</strong><small>数据来源</small></div><span class="lineage-arrow">→</span><div class="lineage-node"><strong>标准化与质量校验</strong><small>平台治理</small></div><span class="lineage-arrow">→</span><div class="lineage-node"><strong>${asset.name}</strong><small>认证资产</small></div></div></div></div></div><div><div class="card"><div class="card-head"><strong>关联服务</strong></div><div class="card-body relation-list">${relatedApi ? `<button class="relation-item" data-related-api="${relatedApi.id}"><span><strong>${relatedApi.name}</strong><small class="list-sub">API · ${relatedApi.endpoint}</small></span><span>›</span></button>` : ""}${relatedBi ? `<button class="relation-item" data-report="${relatedBi.id}"><span><strong>${relatedBi.name}</strong><small class="list-sub">BI · ${relatedBi.category}</small></span><span>›</span></button>` : ""}${!relatedApi && !relatedBi ? `<div class="empty">暂无关联服务</div>` : ""}</div></div><div class="card" style="margin-top:14px"><div class="card-head"><strong>治理属性</strong></div><div class="card-body list"><div class="list-row"><span>敏感等级</span>${badge(asset.sensitivity)}</div><div class="list-row"><span>质量状态</span>${badge(asset.status)}</div><div class="list-row"><span>更新频率</span><strong>${asset.freshness}</strong></div></div></div></div></div>`;
+    }
+
+    function renderQuality() {
+      const attention = dataAssets.filter(asset => asset.quality < 95);
+      content.innerHTML = pageHead(`<button class="btn" data-go="tags">查看标签体系</button><button class="btn primary" data-go="assetCatalog">进入资产目录</button>`) + `<div class="cards-4"><div class="card stat-card"><div class="stat-label">质量规则</div><div class="stat-value">326</div><div class="stat-meta">今日执行 18.6 万次</div></div><div class="card stat-card"><div class="stat-label">平均质量分</div><div class="stat-value">96.8</div><div class="stat-meta">较上月 +1.6</div></div><div class="card stat-card"><div class="stat-label">血缘覆盖率</div><div class="stat-value">93%</div><div class="stat-meta">覆盖核心资产</div></div><div class="card stat-card"><div class="stat-label">待处理异常</div><div class="stat-value">${attention.length}</div><div class="stat-meta">2 项高优先级</div></div></div><div class="grid-2" style="margin-top:14px"><div class="card table-card"><div class="card-head"><strong>质量关注资产</strong></div><table><thead><tr><th>资产</th><th>类型</th><th>质量分</th><th>Owner</th><th></th></tr></thead><tbody>${attention.map(asset => `<tr><td>${asset.name}</td><td>${asset.type}</td><td>${asset.quality}</td><td>${asset.owner}</td><td><button class="btn ghost" data-asset="${asset.id}">查看</button></td></tr>`).join("")}</tbody></table></div><div class="card"><div class="card-head"><strong>核心链路健康度</strong></div><div class="card-body list"><div class="list-row"><div><div class="list-title">订单 → 销售汇总 → 经营驾驶舱</div><div class="list-sub">12 个节点 · 最近更新 8 分钟前</div></div>${badge("健康")}</div><div class="list-row"><div><div class="list-title">WMS → 库存快照 → 补货驾驶舱</div><div class="list-sub">9 个节点 · 最近更新 3 分钟前</div></div>${badge("健康")}</div><div class="list-row"><div><div class="list-title">爬虫 → 竞品档案 → 市场洞察</div><div class="list-sub">14 个节点 · DE 站点延迟</div></div>${badge("关注")}</div></div></div></div>`;
+    }
+
+    function renderBiCenter() {
+      const categories = ["全部","管理","销售","广告","库存","供应链","产品与市场"];
+      content.innerHTML = pageHead(`<span class="pill info">${biReports.length} 个认证报表</span><button class="btn" data-go="assetCatalog">查看数据资产</button>`) + `
+        <div class="filterbar">${categories.map(category => `<button class="btn ${category === "全部" ? "primary" : ""}" data-bi-category="${category}">${category}</button>`).join("")}</div>
+        <div class="report-grid" id="reportGrid">${biReportCards(biReports)}</div>`;
+    }
+
+    function biReportCards(reports) {
+      return reports.map((report, index) => `<button class="report-card" data-report="${report.id}">
+        <div style="display:flex;justify-content:space-between;gap:8px"><span class="pill">${report.category}</span>${badge(report.status)}</div>
+        <h3>${report.name}</h3><p>${report.desc}</p>
+        <div class="report-preview">${[34,58,46,72,64,88,76].map((height, bar) => `<span style="height:${Math.max(18, height - index * 3 + bar)}%"></span>`).join("")}</div>
+        <div class="api-card-foot"><span>${report.owner}</span><span>${report.update}</span></div>
+      </button>`).join("");
+    }
+
+    function renderReportDetail() {
+      const report = state.selectedReport;
+      const dataset = dataAssets.find(asset => asset.id === report.dataset);
+      const values = report.category === "库存" ? ["1,260万","42.6天","3.8%","86.2%"] : report.category === "广告" ? ["$68.2万","4.26","18.6%","$0.82"] : ["$3,286万","18.6%","$426万","12.9%"];
+      content.innerHTML = `<div class="breadcrumb"><button data-go="biCenter">BI 分析中心</button> / ${report.category} / ${report.name}</div>
+        <div class="card detail-hero"><div class="detail-title"><div><div>${badge(report.status)} <span class="pill">${report.category}</span></div><h1>${report.name}</h1><p style="color:var(--muted);margin:0">${report.desc}</p></div><button class="btn" data-asset="${dataset.id}">查看关联数据集</button></div><div class="meta-row"><span>Owner <strong>${report.owner}</strong></span><span>更新频率 <strong>${report.update}</strong></span><span>访问角色 <strong>${report.role}</strong></span><span>关联资产 <strong>${dataset.name}</strong></span></div></div>
+        <div class="filterbar"><select class="select"><option>最近 30 天</option><option>最近 7 天</option><option>本年度</option></select><select class="select"><option>全部站点</option><option>US</option><option>CA</option><option>UK</option></select><select class="select"><option>全部事业部</option><option>北美事业部</option><option>欧洲事业部</option></select></div>
+        <div class="cards-4">${["核心规模","增长/效率","贡献/风险","达成率"].map((label,index) => `<div class="card stat-card"><div class="stat-label">${label}</div><div class="stat-value">${values[index]}</div><div class="stat-meta">${index === 2 ? "需持续关注" : "较上期表现良好"}</div></div>`).join("")}</div>
+        <div class="grid-2" style="margin-top:14px"><div class="card chart-panel"><div class="card-head" style="padding:0 0 10px"><strong>核心指标趋势</strong><span class="pill">最近 7 个周期</span></div><div class="chart-bars">${[42,58,51,68,63,82,76].map((height,index) => `<div class="chart-bar" style="height:${height}%"><small>${["W1","W2","W3","W4","W5","W6","W7"][index]}</small></div>`).join("")}</div></div><div class="card"><div class="card-head"><strong>指标口径</strong></div><div class="card-body list"><div class="list-row"><div><div class="list-title">净销售额</div><div class="list-sub">支付金额 - 退款 - 税费调整，按订单支付日归属</div></div>${badge("已认证")}</div><div class="list-row"><div><div class="list-title">利润率</div><div class="list-sub">利润 / 净销售额，成本采用财务月度结算版本</div></div>${badge("已认证")}</div><div class="list-row"><div><div class="list-title">数据范围</div><div class="list-sub">依据当前用户事业部、站点与店铺权限自动过滤</div></div>${badge("权限继承")}</div></div></div></div>
+        <div class="card table-card" style="margin-top:14px"><div class="card-head"><strong>关联资产与服务</strong></div><table><thead><tr><th>对象</th><th>类型</th><th>Owner</th><th>更新</th><th>状态</th><th></th></tr></thead><tbody><tr><td>${dataset.name}</td><td>${dataset.type}</td><td>${dataset.owner}</td><td>${dataset.freshness}</td><td>${badge(dataset.status)}</td><td><button class="btn ghost" data-asset="${dataset.id}">查看资产</button></td></tr>${dataset.api ? `<tr><td>${apis.find(api => api.id === dataset.api)?.name || dataset.api}</td><td>API 服务</td><td>${dataset.owner}</td><td>实时</td><td>${badge("已发布")}</td><td><button class="btn ghost" data-related-api="${dataset.api}">查看 API</button></td></tr>` : ""}</tbody></table></div>`;
+    }
+
+    function apiCards(list) {
+      if (!list.length) return `<div class="card empty"><strong>没有匹配的 API</strong><p>尝试调整关键词或筛选条件。</p></div>`;
+      return `<div class="api-grid">${list.map(a => `
+        <button class="api-card" data-api="${a.id}">
+          <div class="api-card-top"><span class="method">${a.method}</span>${badge(a.access)}</div>
+          <h3>${a.name}</h3><p>${a.desc}</p>
+          <div style="margin-top:10px">${badge(a.status)} <span class="pill">${a.subcategory}</span></div>
+          <div class="api-card-foot"><span>${a.owner}</span><span>SLA ${a.sla}</span></div>
+        </button>`).join("")}</div>`;
+    }
+
+    function categoryCount(category, subcategory = "") {
+      return apis.filter(a => (!category || a.category === category) && (!subcategory || a.subcategory === subcategory)).length;
+    }
+
+    function categoryTree(list) {
+      if (!list.length) return `<div class="empty" style="padding:28px 8px"><strong>没有匹配接口</strong><p>请调整搜索或筛选条件。</p></div>`;
+      return apiCategories.map(category => {
+        const categoryApis = list.filter(api => api.category === category.name);
+        if (!categoryApis.length) return "";
+        const open = state.marketOpenCategories.includes(category.name);
+        return `<div class="category-group">
+          <button class="category-main" data-market-category="${category.name}">
+            <span>${category.name}</span>
+            <span><span class="category-count">${categoryApis.length}</span> <span class="category-arrow">${open ? "收起" : "展开"}</span></span>
+          </button>
+          ${open ? `<div class="category-subs">${categoryApis.map(api => `
+            <button class="api-tree-item ${state.selectedApi?.id === api.id ? "active" : ""}" data-market-api="${api.id}">
+              <span class="method">${api.method}</span>
+              <span class="api-tree-copy"><strong>${api.name}</strong><small>${api.subcategory} · ${api.status}</small></span>
+            </button>`).join("")}</div>` : ""}
+        </div>`;
+      }).join("");
+    }
+
+    function currentMarketList() {
+      const keyword = state.marketKeyword.toLowerCase();
+      return apis.filter(a =>
+        (!keyword || `${a.name}${a.endpoint}${a.desc}${a.tags.join("")}`.toLowerCase().includes(keyword)) &&
+        (!state.marketAccess || a.access === state.marketAccess) &&
+        (!state.marketStatus || a.status === state.marketStatus) &&
+        (!state.marketMethod || a.method === state.marketMethod) &&
+        (!state.marketTag || a.tags.includes(state.marketTag))
+      );
+    }
+
+    function marketSummary(list) {
+      const category = apiCategories.find(item => item.name === state.marketCategory);
+      const title = state.marketSubcategory || state.marketCategory || "全部 API";
+      const desc = state.marketSubcategory
+        ? `${state.marketCategory} / ${state.marketSubcategory} 分类下的标准数据服务。`
+        : category?.desc || "按业务类型浏览公司已开放的数据 API。";
+      return `<div class="category-summary">
+        <div><h2>${title}</h2><p>${desc}</p></div>
+        <div class="category-stats">
+          <span><strong>${list.length}</strong>当前结果</span>
+          <span><strong>${list.filter(a => a.access === "已授权").length}</strong>已授权</span>
+          <span><strong>${list.filter(a => a.status === "已认证").length}</strong>已认证</span>
+        </div>
+      </div>`;
+    }
+
+    function marketDetailPanel(api) {
+      if (!api) return `<div class="card empty"><strong>没有可展示的接口</strong><p>请调整左侧筛选条件。</p></div>`;
+      return `<div class="card" style="padding:0 16px;margin-bottom:14px">
+        <div class="tabs">
+          <button class="tab ${state.detailTab === "docs" ? "active" : ""}" data-market-tab="docs">接口文档</button>
+          <button class="tab ${state.detailTab === "debug" ? "active" : ""}" data-market-tab="debug">在线调试</button>
+          <button class="tab ${state.detailTab === "versions" ? "active" : ""}" data-market-tab="versions">版本记录</button>
+        </div>
+      </div>
+      <div id="marketDetailBody">${detailBody(api)}</div>`;
+    }
+
+    function renderMarket() {
+      const list = currentMarketList();
+      if (!list.some(api => api.id === state.selectedApi?.id)) {
+        state.selectedApi = list[0] || null;
+        state.detailTab = "docs";
+      }
+      content.innerHTML = pageHead(`<span class="pill info">${list.length} 个接口</span><button class="btn" data-go="apps">我的应用</button>`) + `
+        <div class="market-layout">
+          <aside class="card category-panel" id="categoryPanel">
+            <div class="market-filters">
+              <input class="field" id="apiSearch" value="${state.marketKeyword}" placeholder="搜索接口名称或标签" />
+            </div>
+            <div id="categoryTree">${categoryTree(list)}</div>
+          </aside>
+          <section class="market-detail-pane" id="marketDetailPane">${marketDetailPanel(state.selectedApi)}</section>
+        </div>`;
+    }
+
+    function renderApiDetail() {
+      const a = state.selectedApi;
+      content.innerHTML = `
+        <div class="breadcrumb"><button data-go="market">API 市场</button> / ${a.category} / ${a.subcategory} / ${a.name}</div>
+        <div class="card detail-hero">
+          <div class="detail-title">
+            <div><div>${badge(a.status)} ${badge(a.access)}</div><h1>${a.name}</h1><p style="color:var(--muted);margin:0">${a.desc}</p></div>
+            <button class="btn primary" id="createAppFromApi">${a.access === "已授权" ? "创建应用接入" : "查看所需角色"}</button>
+          </div>
+          <div style="margin-top:16px"><span class="endpoint"><b class="method">${a.method}</b>${a.endpoint}</span></div>
+          <div class="meta-row"><span>Owner <strong>${a.owner}</strong></span><span>SLA <strong>${a.sla}</strong></span><span>P95 <strong>${a.latency}</strong></span><span>版本 <strong>v1.4.0</strong></span><span>更新时间 <strong>5 分钟前</strong></span></div>
+          <div class="tag-cloud" style="margin-top:12px">${a.tags.map(tag => `<span class="tag-chip">${tag}</span>`).join("")}<span class="tag-chip"><b>字段</b>组织范围</span></div>
+          <div class="tabs">
+            <button class="tab ${state.detailTab === "docs" ? "active" : ""}" data-detail-tab="docs">接口文档</button>
+            <button class="tab ${state.detailTab === "debug" ? "active" : ""}" data-detail-tab="debug">在线调试</button>
+            <button class="tab ${state.detailTab === "versions" ? "active" : ""}" data-detail-tab="versions">版本记录</button>
+          </div>
+        </div>
+        <div id="detailBody">${detailBody(a)}</div>`;
+    }
+
+    function sampleEndpoint(api) {
+      return api.endpoint.replace(/\{[^}]+\}/g, api.param === "sku" ? "AUVON-TENS-24M" : "DEMO-001");
+    }
+
+    function responseFields(api) {
+      const schemas = {
+        "基础数据": [["data.sku", "string", "统一业务编码", "主键"], ["data.name", "string", "标准名称", "L1 内部公开"], ["data.status", "enum", "启用状态：ACTIVE / INACTIVE", "治理状态"]],
+        "销售": [["data.order_id", "string", "订单唯一标识", "主键"], ["data.site", "string", "销售站点编码", "组织范围"], ["data.amount", "decimal(18,2)", "订单金额，单位见 currency", "L2 内部受限"]],
+        "供应链": [["data.supplier_code", "string", "供应商编码", "业务编码"], ["data.planned_qty", "integer", "计划或采购数量", "L2 内部受限"], ["data.expected_date", "date", "预计到货日期，YYYY-MM-DD", "数据时效"]],
+        "广告": [["data.campaign_id", "string", "广告活动标识", "主键"], ["data.spend", "decimal(18,2)", "广告花费", "L2 内部受限"], ["data.roas", "decimal(10,4)", "广告投入产出比", "认证指标"]],
+        "库存": [["data.sku", "string", "统一 SKU 编码", "主键"], ["data.warehouse_code", "string", "仓库编码", "组织范围"], ["data.available_qty", "integer", "当前可售库存", "L2 内部受限"]],
+        "物流": [["data.shipment_id", "string", "发货单或包裹标识", "主键"], ["data.logistics_status", "enum", "运输状态枚举", "治理状态"], ["data.estimated_delivery", "datetime", "预计送达时间，ISO 8601", "数据时效"]],
+        "市场竞品": [["data.asin", "string", "竞品 ASIN", "业务编码"], ["data.price", "decimal(18,2)", "当前售价", "L1 内部公开"], ["data.rank", "integer", "类目排名", "数据时效"]],
+        "用户 / VOC": [["data.review_id", "string", "评论唯一标识", "主键"], ["data.sentiment", "enum", "POSITIVE / NEUTRAL / NEGATIVE", "模型结果"], ["data.topic", "string", "评论主题", "L2 内部受限"]],
+        "内容知识": [["data.document_id", "string", "知识文档标识", "主键"], ["data.title", "string", "文档或素材标题", "L1 内部公开"], ["data.content", "string", "命中的内容片段", "L2 内部受限"]]
+      };
+      return schemas[api.category] || schemas["基础数据"];
+    }
+
+    function detailBody(a) {
+      if (state.detailTab === "debug") return `
+        <div class="doc-layout">
+          <div class="card"><div class="card-head"><strong>请求参数</strong><span class="pill success">测试环境</span></div><div class="card-body">
+            <div class="form-group"><label>应用</label><select><option>运营经营驾驶舱</option><option>Listing Content Agent</option></select></div>
+            <div class="form-group"><label>${a.param}（必填）</label><input id="debugParam" value="${a.param === "sku" ? "AUVON-TENS-24M" : a.method === "POST" ? "2026-07-01" : "DEMO-001"}" /></div>
+            <div class="form-group"><label>站点 / 组织范围</label><select><option>US · 北美事业部</option><option>CA · 北美事业部</option></select></div>
+            <button class="btn primary" id="sendRequest">发送请求</button>
+          </div></div>
+          <div class="card"><div class="card-head"><strong>响应</strong><span id="responseStatus" class="pill">等待请求</span></div><div class="card-body">
+            <div id="responseMeta" class="list-sub" style="margin-bottom:8px">发送请求后显示耗时与 Trace ID</div>
+            <div class="code-box" id="responseBox">{
+  "message": "点击发送请求查看模拟响应"
+}</div>
+          </div></div>
+        </div>`;
+      if (state.detailTab === "versions") return `
+        <div class="card table-card" style="margin-top:14px"><table><thead><tr><th>版本</th><th>状态</th><th>发布时间</th><th>变更说明</th><th>兼容性</th></tr></thead><tbody>
+          <tr><td>v1.4.0</td><td>${badge("当前版本")}</td><td>2026-07-24</td><td>新增品牌和站点筛选参数</td><td>${badge("向后兼容")}</td></tr>
+          <tr><td>v1.3.1</td><td>稳定</td><td>2026-06-18</td><td>优化空属性返回结构</td><td>${badge("向后兼容")}</td></tr>
+          <tr><td>v1.2.0</td><td>${badge("已废弃")}</td><td>2026-03-10</td><td>统一分页结构</td><td>${badge("迁移提醒")}</td></tr>
+        </tbody></table></div>`;
+      return `
+        <div class="card api-reference">
+          <div class="reference-head">
+            <div><h2>${a.name}</h2><div class="list-sub">${a.desc}</div></div>
+            <div class="top-actions"><button class="btn" data-export-doc="OpenAPI">下载 OpenAPI</button><button class="btn primary" data-export-doc="Postman">下载 Postman</button></div>
+          </div>
+
+          <section class="reference-section">
+            <h3 class="reference-title"><span>一、</span>接口基础信息</h3>
+            <div class="reference-meta">
+              <div><small>请求地址</small><code>https://api-test.company.internal${a.endpoint}</code></div>
+              <div><small>请求方式</small><strong>${a.method}</strong></div>
+              <div><small>接口认证</small><strong>OAuth 2.0 · Bearer Token</strong></div>
+              <div><small>接口版本</small><strong>v1.4.0</strong></div>
+              <div><small>限流规则</small><strong>生产 300 次/分钟/应用</strong></div>
+              <div><small>超时 / SLA</small><strong>3 秒 · ${a.sla} · P95 ${a.latency}</strong></div>
+              <div><small>数据更新</small><strong>${a.category === "库存" ? "实时，延迟 ≤ 5 分钟" : "小时级"}</strong></div>
+              <div><small>Owner</small><strong>${a.owner}</strong></div>
+              <div><small>权限范围</small><strong>${a.access} · 行列权限自动生效</strong></div>
+            </div>
+          </section>
+
+          <section class="reference-section">
+            <h3 class="reference-title"><span>二、</span>请求头</h3>
+            <table><thead><tr><th>名称</th><th>类型</th><th>必填</th><th>描述</th></tr></thead><tbody>
+              <tr><td><code>Authorization</code></td><td>string</td><td>是</td><td>Bearer Access Token，有效期 2 小时</td></tr>
+              <tr><td><code>X-Client-Id</code></td><td>string</td><td>是</td><td>调用应用唯一标识</td></tr>
+              <tr><td><code>X-Request-Id</code></td><td>string</td><td>否</td><td>幂等及全链路问题追踪标识</td></tr>
+            </tbody></table>
+          </section>
+
+          <section class="reference-section">
+            <h3 class="reference-title"><span>三、</span>${a.method === "POST" ? "请求体" : "请求参数"}</h3>
+            <table><thead><tr><th>名称</th><th>位置</th><th>类型</th><th>必填</th><th>描述</th></tr></thead><tbody>
+              <tr><td><code>${a.param}</code></td><td>${a.endpoint.includes("{") ? "path" : a.method === "POST" ? "body" : "query"}</td><td>string</td><td>是</td><td>1–64 字符；${a.subcategory}查询主参数</td></tr>
+              <tr><td><code>site</code></td><td>${a.method === "POST" ? "body" : "query"}</td><td>enum</td><td>否</td><td>US / CA / UK / DE，默认 US</td></tr>
+              <tr><td><code>page_no</code></td><td>${a.method === "POST" ? "body" : "query"}</td><td>integer</td><td>否</td><td>页码，最小 1，默认 1</td></tr>
+              <tr><td><code>page_size</code></td><td>${a.method === "POST" ? "body" : "query"}</td><td>integer</td><td>否</td><td>每页 1–100 条，默认 20</td></tr>
+            </tbody></table>
+          </section>
+
+          <section class="reference-section">
+            <h3 class="reference-title"><span>四、</span>请求参数示例</h3>
+            <div class="reference-code"><button class="btn ghost" data-copy="request">复制</button><div class="code-box">curl -X ${a.method} \\
+  "https://api-test.company.internal${sampleEndpoint(a)}" \\
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \\
+  -H "X-Client-Id: app_ops_us_8f21" \\
+  -H "X-Request-Id: req_20260730_001"</div></div>
+          </section>
+
+          <section class="reference-section">
+            <h3 class="reference-title"><span>五、</span>响应体</h3>
+            <table><thead><tr><th>名称</th><th>类型</th><th>必返</th><th>描述</th><th>字段标签</th></tr></thead><tbody>
+              <tr><td><code>code</code></td><td>integer</td><td>是</td><td>业务状态码，0 表示成功</td><td><span class="pill">公共字段</span></td></tr>
+              ${responseFields(a).map(field => `<tr><td><code>${field[0]}</code></td><td>${field[1]}</td><td>是</td><td>${field[2]}</td><td><span class="pill">${field[3]}</span></td></tr>`).join("")}
+              <tr><td><code>meta.data_time</code></td><td>datetime</td><td>是</td><td>数据时间，ISO 8601 UTC</td><td><span class="pill">数据时效</span></td></tr>
+              <tr><td><code>meta.trace_id</code></td><td>string</td><td>是</td><td>全链路问题定位标识</td><td><span class="pill">审计</span></td></tr>
+            </tbody></table>
+          </section>
+
+          <section class="reference-section">
+            <h3 class="reference-title"><span>六、</span>响应体示例</h3>
+            <div class="reference-code"><button class="btn ghost" data-copy="response">复制</button><div class="code-box">{
+  "code": 0,
+  "data": {
+    "${responseFields(a)[0][0].replace("data.", "")}": "DEMO-001",
+    "${responseFields(a)[1][0].replace("data.", "")}": "示例值"
+  },
+  "meta": {
+    "asset_version": "v1.4.0",
+    "data_time": "2026-07-30T09:30:00Z",
+    "trace_id": "tr_8e90a71"
+  }
+}</div></div>
+          </section>
+
+          <section class="reference-section">
+            <h3 class="reference-title"><span>七、</span>变更历史</h3>
+            <table><thead><tr><th>版本</th><th>变更时间</th><th>变更内容</th><th>兼容性</th></tr></thead><tbody>
+              <tr><td>v1.4.0</td><td>2026-07-24</td><td>新增站点筛选和 Trace ID</td><td>${badge("向后兼容")}</td></tr>
+              <tr><td>v1.3.1</td><td>2026-06-18</td><td>优化空属性返回结构</td><td>${badge("向后兼容")}</td></tr>
+            </tbody></table>
+          </section>
+
+          <section class="reference-section">
+            <h3 class="reference-title"><span>八、</span>错误码</h3>
+            <table><thead><tr><th>HTTP 状态</th><th>业务码</th><th>描述</th><th>处理建议</th></tr></thead><tbody>
+              <tr><td>400</td><td><code>INVALID_ARGUMENT</code></td><td>请求参数错误</td><td>根据 message 修正参数</td></tr>
+              <tr><td>401</td><td><code>INVALID_TOKEN</code></td><td>Token 无效或过期</td><td>重新获取访问令牌</td></tr>
+              <tr><td>403</td><td><code>ACCESS_DENIED</code></td><td>角色、数据行或字段权限不足</td><td>检查应用角色权限包</td></tr>
+              <tr><td>429</td><td><code>RATE_LIMITED</code></td><td>超过接口调用配额</td><td>按 Retry-After 退避重试</td></tr>
+              <tr><td>500</td><td><code>INTERNAL_ERROR</code></td><td>服务内部异常</td><td>携带 Trace ID 联系 ${a.owner}</td></tr>
+            </tbody></table>
+          </section>
+        </div>`;
+    }
+
+    function renderApps() {
+      content.innerHTML = pageHead(`<button class="btn primary" id="newApp">创建应用</button>`) + `
+        <div class="notice" style="margin-bottom:14px">应用是调用 API 的独立身份。岗位角色决定可用 API 范围，应用凭证用于鉴权、限流和审计，请勿在前端代码或公开仓库中保存 Secret。</div>
+        <div class="cards-3">${state.apps.map(app => `
+          <div class="card app-card"><div style="display:flex;justify-content:space-between;gap:10px"><div><h3>${app.name}</h3><div class="list-sub">${app.owner}</div></div>${badge(app.status)}</div>
+            <div class="meta-row"><span>环境 <strong>${app.env}</strong></span><span>已授权 <strong>${app.apiCount} API</strong></span></div>
+            <div class="credential">Client ID · ${app.clientId}</div>
+            <div class="top-actions" style="margin-top:13px"><button class="btn" data-copy="${app.clientId}">复制 ID</button><button class="btn">查看凭证</button><button class="btn ghost" data-go="logs">调用日志</button></div>
+          </div>`).join("")}</div>`;
+    }
+
+    function renderLogs() {
+      const logs = [
+        ["09:42:18", "运营经营驾驶舱", "SKU / PN 产品档案", "200", "76ms", "tr_8e90a71"],
+        ["09:41:54", "Listing Content Agent", "产品内容知识检索", "200", "142ms", "tr_b3c120f"],
+        ["09:40:27", "运营经营驾驶舱", "库存可售与健康度", "403", "18ms", "tr_72af3d1"],
+        ["09:38:06", "运营经营驾驶舱", "认证经营指标查询", "200", "126ms", "tr_1dc99fe"],
+        ["09:35:44", "Listing Content Agent", "评论 VOC 洞察", "429", "9ms", "tr_d8112ab"]
+      ];
+      content.innerHTML = pageHead(`<button class="btn">导出日志</button>`) + `
+        <div class="card table-card"><div class="table-toolbar"><input class="field grow" placeholder="搜索 Trace ID 或 API" /><select class="select"><option>全部应用</option>${state.apps.map(a => `<option>${a.name}</option>`).join("")}</select><select class="select"><option>全部状态</option><option>200</option><option>403</option><option>429</option></select></div>
+        <table><thead><tr><th>时间</th><th>应用</th><th>API</th><th>状态</th><th>耗时</th><th>Trace ID</th><th></th></tr></thead><tbody>${logs.map(l => `<tr><td>${l[0]}</td><td>${l[1]}</td><td>${l[2]}</td><td>${l[3] === "200" ? badge("200 成功") : badge(l[3] + " 失败")}</td><td>${l[4]}</td><td><code>${l[5]}</code></td><td><button class="btn ghost" data-log="${l[5]}">详情</button></td></tr>`).join("")}</tbody></table></div>`;
+    }
+
+    function renderGuide() {
+      content.innerHTML = pageHead(`<button class="btn primary" data-go="market">开始接入</button>`) + `
+        <div class="grid-2">
+          <div class="card"><div class="card-head"><strong>快速开始</strong><span class="pill info">预计 15 分钟</span></div><div class="card-body">
+            <h3 class="section-title">1. 创建应用</h3><p class="list-sub">在“我的应用”登记系统名称、负责人和环境，平台将生成 Client ID 与 Secret。</p>
+            <h3 class="section-title" style="margin-top:18px">2. 确认角色授权</h3><p class="list-sub">系统根据你的岗位角色自动展示可用 API；超出角色范围时联系管理员调整角色权限包。</p>
+            <h3 class="section-title" style="margin-top:18px">3. 获取访问令牌</h3><div class="code-box">curl -X POST https://api.company.internal/oauth/token \\
+  -d "client_id=YOUR_CLIENT_ID" \\
+  -d "client_secret=YOUR_CLIENT_SECRET" \\
+  -d "grant_type=client_credentials"</div>
+            <h3 class="section-title" style="margin-top:18px">4. 调用数据 API</h3><div class="code-box">curl https://api.company.internal/v1/products/AUVON-TENS-24M \\
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"</div>
+          </div></div>
+          <div><div class="card"><div class="card-head"><strong>环境地址</strong></div><div class="card-body list">
+            <div class="list-row"><div><div class="list-title">测试环境</div><div class="list-sub">https://api-test.company.internal</div></div>${badge("推荐调试")}</div>
+            <div class="list-row"><div><div class="list-title">生产环境</div><div class="list-sub">https://api.company.internal</div></div>${badge("稳定")}</div>
+          </div></div>
+          <div class="card" style="margin-top:14px"><div class="card-head"><strong>通用错误码</strong></div><div class="card-body list">
+            <div class="list-row"><div><div class="list-title">401 · 凭证无效</div><div class="list-sub">检查 Token 或应用状态</div></div></div>
+            <div class="list-row"><div><div class="list-title">403 · 角色权限不足</div><div class="list-sub">确认岗位角色权限包</div></div></div>
+            <div class="list-row"><div><div class="list-title">429 · 超出调用配额</div><div class="list-sub">降低频率或申请调整配额</div></div></div>
+          </div></div></div>
+        </div>`;
+    }
+
+    function renderAssets() {
+      content.innerHTML = pageHead(`<button class="btn primary" data-go="publish">发布 API</button>`) + `
+        <div class="card table-card"><div class="table-toolbar"><input class="field grow" placeholder="搜索 API 资产" /><select class="select"><option>全部状态</option><option>已发布</option><option>测试中</option><option>草稿</option><option>已废弃</option></select><select class="select"><option>全部来源</option><option>已有服务</option><option>数据集生成</option></select></div>
+        <table><thead><tr><th>API 名称</th><th>来源</th><th>Owner</th><th>版本</th><th>状态</th><th>今日调用</th><th>成功率</th><th></th></tr></thead><tbody>
+          ${apis.map((a,i) => `<tr><td><strong>${a.name}</strong><div class="list-sub">${a.endpoint}</div></td><td>${i % 2 ? "已有服务" : "数据集生成"}</td><td>${a.owner}</td><td>v1.${4-i}.0</td><td>${badge(i === 4 ? "测试中" : i === 5 ? "草稿" : "已发布")}</td><td>${a.calls}</td><td>${i === 4 ? "98.76%" : "99.92%"}</td><td><button class="btn ghost" data-api="${a.id}">管理</button></td></tr>`).join("")}
+        </tbody></table></div>`;
+    }
+
+    function renderPublish() {
+      content.innerHTML = pageHead() + `
+        <div class="notice" style="margin-bottom:14px">请选择 API 来源。两种方式最终都会进入统一网关、文档、角色权限、版本、监控和审计体系。</div>
+        <div class="source-choices">
+          <button class="source-choice" data-start-wizard="existing"><span class="pill info">方式一</span><strong style="margin-top:14px">登记已有 API</strong><span>导入 OpenAPI / Swagger，补充业务信息、角色权限和网关策略后发布。</span><div style="margin-top:14px;color:var(--primary);font-weight:700;font-size:12px">开始登记 →</div></button>
+          <button class="source-choice" data-start-wizard="dataset"><span class="pill success">方式二</span><strong style="margin-top:14px">从数据集生成 API</strong><span>选择数据库或数仓认证数据集，配置字段、参数、脱敏和缓存，自动生成接口。</span><div style="margin-top:14px;color:var(--success);font-weight:700;font-size:12px">开始生成 →</div></button>
+        </div>
+        <div class="card" style="margin-top:14px"><div class="card-head"><strong>最近草稿</strong></div><div class="card-body list">
+          <div class="list-row"><div><div class="list-title">供应商交期表现 API</div><div class="list-sub">数据集生成 · 完成 3/5 步 · 12 分钟前编辑</div></div><button class="btn" data-start-wizard="dataset">继续</button></div>
+          <div class="list-row"><div><div class="list-title">Amazon 广告活动查询</div><div class="list-sub">已有 API 登记 · 完成 2/5 步 · 昨天编辑</div></div><button class="btn" data-start-wizard="existing">继续</button></div>
+        </div></div>`;
+    }
+
+    function renderTags() {
+      content.innerHTML = pageHead(`<button class="btn" id="batchTag">批量打标签</button><button class="btn primary" id="newTag">新建标签</button>`) + `
+        <div class="cards-4" style="margin-bottom:14px">
+          <div class="card stat-card"><div class="stat-label">标签分组</div><div class="stat-value">${tagGroups.length}</div><div class="stat-meta">统一分层管理</div></div>
+          <div class="card stat-card"><div class="stat-label">有效标签</div><div class="stat-value">${tagGroups.reduce((sum, group) => sum + group.tags.length, 0)}</div><div class="stat-meta">覆盖资产、API、BI 与字段</div></div>
+          <div class="card stat-card"><div class="stat-label">已标记资产</div><div class="stat-value">${dataAssets.length}</div><div class="stat-meta">核心资产覆盖率 100%</div></div>
+          <div class="card stat-card"><div class="stat-label">字段标签覆盖</div><div class="stat-value">86%</div><div class="stat-meta">本月提升 9%</div></div>
+        </div>
+        <div class="tag-group-grid">
+          ${tagGroups.map((group, index) => `
+            <div class="card"><div class="card-head"><strong>${group.name}</strong><span class="pill">${group.scope}</span></div>
+              <div class="card-body"><div class="tag-cloud">${group.tags.map((tag, tagIndex) => `<button class="tag-chip" data-tag-edit="${tag}"><span>${tag}</span><b>${(index + 2) * (tagIndex + 3)}</b></button>`).join("")}</div></div>
+            </div>`).join("")}
+        </div>
+        <div class="card table-card" style="margin-top:14px"><div class="card-head"><strong>标签关联资产</strong><span class="pill info">最近更新</span></div>
+          <table><thead><tr><th>资产 / 字段</th><th>对象类型</th><th>关联标签</th><th>Owner</th><th>更新时间</th><th></th></tr></thead><tbody>
+            <tr><td><strong>DWS 库存健康快照</strong><div class="list-sub">ana-inventory</div></td><td>数据资产</td><td><span class="pill">库存</span> <span class="pill">实时</span> <span class="pill">认证资产</span></td><td>库存数据组</td><td>今天 09:42</td><td><button class="btn ghost" data-asset="ana-inventory">查看</button></td></tr>
+            <tr><td><strong>unit_cost</strong><div class="list-sub">/v1/inventory/health</div></td><td>字段</td><td><span class="pill warning">L3 敏感</span> <span class="pill">敏感成本</span></td><td>供应链数据组</td><td>昨天 16:20</td><td><button class="btn ghost" data-tag-edit="unit_cost">编辑</button></td></tr>
+            <tr><td><strong>公司经营管理驾驶舱</strong></td><td>BI 报表</td><td><span class="pill">销售</span> <span class="pill success">已认证</span> <span class="pill">认证指标</span></td><td>经营分析组</td><td>昨天 11:08</td><td><button class="btn ghost" data-report="bi-management">查看</button></td></tr>
+          </tbody></table>
+        </div>`;
+    }
+
+    function renderRoles() {
+      const roles = [
+        ["业务研发", "所有业务线", "18", "事业部 = 当前用户；站点 ∈ 授权站点", "隐藏成本、利润、个人信息", "38 人 / 12 应用"],
+        ["运营分析师", "运营中心", "24", "店铺 ∈ 授权店铺；站点 ∈ 授权站点", "隐藏成本和供应商联系人", "24 人 / 6 应用"],
+        ["供应链计划", "供应链中心", "21", "仓库 ∈ 授权仓库；事业部 = 当前用户", "隐藏利润和个人信息", "16 人 / 4 应用"],
+        ["产品经理", "产品中心", "17", "品牌 ∈ 授权品牌；站点 ∈ 授权站点", "隐藏成本、利润", "31 人 / 3 应用"],
+        ["财务分析", "财务中心", "12", "事业部 ∈ 授权事业部", "隐藏用户个人信息", "8 人 / 2 应用"]
+      ];
+      content.innerHTML = pageHead(`<button class="btn" data-go="simulator">权限模拟</button><button class="btn primary" id="newRole">新建角色权限包</button>`) + `
+        <div class="notice warning" style="margin-bottom:14px"><strong>默认拒绝、拒绝优先。</strong> 资产目录、BI 报表和 API 统一继承资产权限；最终权限 = 角色资产权限 ∩ 用户属性行范围 ∩ 字段可见范围。</div>
+        <div class="card table-card"><table><thead><tr><th>岗位角色</th><th>适用组织</th><th>资产/API</th><th>行级策略</th><th>隐藏字段</th><th>使用主体</th><th></th></tr></thead><tbody>
+          ${roles.map(r => `<tr><td><strong>${r[0]}</strong><div class="list-sub">策略 v3.2 · 已生效</div></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td><button class="btn ghost" data-edit-role="${r[0]}">配置</button></td></tr>`).join("")}
+        </tbody></table></div>
+        <div class="policy-grid" style="margin-top:14px">
+          <div class="policy-block"><h3>资产与服务访问控制</h3><p>按资产类型、业务域、数据资产、BI 报表或单个 API 授权。</p><span class="pill info">RBAC</span></div>
+          <div class="policy-block"><h3>行级数据范围</h3><p>通过事业部、站点、店铺、仓库、品牌等用户属性动态过滤。</p><span class="pill success">ABAC</span></div>
+          <div class="policy-block"><h3>列级字段控制</h3><p>字段默认可见；被角色策略拒绝的字段从响应中完全移除。</p><span class="pill warning">字段隐藏</span></div>
+        </div>`;
+    }
+
+    function renderSimulator() {
+      content.innerHTML = pageHead(`<button class="btn" data-go="roles">返回角色配置</button>`) + `
+        <div class="grid-2">
+          <div class="card"><div class="card-head"><strong>模拟请求条件</strong><span class="pill warning">默认拒绝</span></div><div class="card-body">
+            <div class="form-group"><label>模拟用户</label><select id="simUser"><option>李明 · 北美事业部 · 业务研发</option><option>王芳 · 供应链中心 · 供应链计划</option><option>陈晨 · 财务中心 · 财务分析</option></select></div>
+            <div class="form-group"><label>调用应用</label><select><option>运营经营驾驶舱</option><option>Listing Content Agent</option><option>供应链补货系统</option></select></div>
+            <div class="form-group"><label>目标数据资产</label><select id="simAsset">${dataAssets.slice(0, 12).map(asset => `<option value="${asset.id}">${asset.type} / ${asset.name}</option>`).join("")}</select></div>
+            <div class="form-group"><label>目标 API</label><select id="simApi">${apis.slice(0, 18).map(api => `<option value="${api.id}">${api.category} / ${api.name}</option>`).join("")}</select></div>
+            <div class="form-group"><label>请求数据范围</label><input value="site=US, warehouse=LAX-01, business_unit=NorthAmerica" /></div>
+            <button class="btn primary" id="runSimulation">执行权限模拟</button>
+          </div></div>
+          <div class="card"><div class="card-head"><strong>策略计算顺序</strong></div><div class="card-body list">
+            <div class="list-row"><div><div class="list-title">1. 资产与服务角色权限</div><div class="list-sub">检查角色权限包是否允许目标资产及关联 API/BI</div></div>${badge("RBAC")}</div>
+            <div class="list-row"><div><div class="list-title">2. 行级属性条件</div><div class="list-sub">匹配事业部、站点、店铺、仓库和品牌</div></div>${badge("ABAC")}</div>
+            <div class="list-row"><div><div class="list-title">3. 列级字段策略</div><div class="list-sub">移除角色无权访问的响应字段</div></div>${badge("拒绝优先")}</div>
+          </div></div>
+        </div>
+        <div id="simulationResult" class="card" style="margin-top:14px">
+          <div class="empty"><strong>等待执行权限模拟</strong><p>系统将展示命中的策略、允许的数据行和被隐藏字段。</p></div>
+        </div>`;
+    }
+
+    function renderOperations() {
+      content.innerHTML = pageHead(`<button class="btn">查看实时监控</button>`) + `
+        <div class="cards-4">
+          <div class="card stat-card"><div class="stat-label">近 30 日调用量</div><div class="stat-value">824万</div><div class="stat-meta">环比 +18.2%</div></div>
+          <div class="card stat-card"><div class="stat-label">成功率</div><div class="stat-value">99.91%</div><div class="stat-meta">SLO 已达标</div></div>
+          <div class="card stat-card"><div class="stat-label">P95 延迟</div><div class="stat-value">138ms</div><div class="stat-meta">环比降低 11ms</div></div>
+          <div class="card stat-card"><div class="stat-label">活跃应用</div><div class="stat-value">42</div><div class="stat-meta">新增 5 个</div></div>
+        </div>
+        <div class="grid-2" style="margin-top:14px">
+          <div class="card"><div class="card-head"><strong>API 调用排行</strong><span class="pill">近 30 日</span></div><div class="card-body bar-list">
+            ${apis.slice(0,5).map((a,i) => `<div><div class="bar-head"><span>${a.name}</span><strong>${[92,78,64,41,28][i]}%</strong></div><div class="bar-track"><div class="bar-fill" style="width:${[92,78,64,41,28][i]}%"></div></div></div>`).join("")}
+          </div></div>
+          <div class="card"><div class="card-head"><strong>运营提醒</strong></div><div class="card-body list">
+            <div class="list-row"><div><div class="list-title">2 个 API 低使用</div><div class="list-sub">连续 30 天调用少于 10 次</div></div>${badge("待评估")}</div>
+            <div class="list-row"><div><div class="list-title">库存 API 配额接近阈值</div><div class="list-sub">运营驾驶舱已使用 86%</div></div>${badge("关注")}</div>
+            <div class="list-row"><div><div class="list-title">1 个版本即将废弃</div><div class="list-sub">仍有 3 个应用未完成迁移</div></div>${badge("风险")}</div>
+            <div class="list-row"><div><div class="list-title">文档完整度 94%</div><div class="list-sub">5 个 API 缺少错误码示例</div></div>${badge("改进")}</div>
+          </div></div>
+        </div>`;
+    }
+
+    function renderAudit() {
+      const rows = [
+        ["10:58:16", "系统", "资产认证", "DWS 销售经营日汇总", "质量规则 12/12 通过，发布资产 v3.2", "service"],
+        ["10:51:08", "王晨", "血缘变更", "DWS 库存健康快照", "新增 WMS → ODS → DWS → BI 链路", "10.16.4.17"],
+        ["10:44:32", "张敏", "标签策略变更", "字段标签 · unit_cost", "新增 L3 敏感、敏感成本标签", "10.16.8.24"],
+        ["09:36:14", "张敏", "角色策略变更", "供应链计划权限包", "新增库存健康 API", "10.16.8.24"],
+        ["09:21:48", "系统", "凭证轮换", "运营经营驾驶舱", "自动轮换生产 Secret", "service"],
+        ["08:57:06", "李哲", "API 发布", "认证经营指标查询", "v1.4.0 发布生产", "10.16.12.9"],
+        ["08:42:31", "王晨", "列级权限变更", "库存可售与健康度", "unit_cost 字段改为完全隐藏", "10.16.4.17"],
+        ["08:20:08", "系统", "行级策略发布", "运营分析师 v3.2", "新增店铺 ∈ 用户授权店铺", "service"],
+        ["昨天 18:20", "陈瑜", "API 下线", "旧版商品查询 v0", "完成订阅方迁移后下线", "10.16.7.33"]
+      ];
+      content.innerHTML = pageHead(`<button class="btn">导出审计报告</button>`) + `
+        <div class="card table-card"><div class="table-toolbar"><input class="field grow" placeholder="搜索人员、资产或操作" /><select class="select"><option>全部事件</option><option>资产</option><option>质量与血缘</option><option>权限</option><option>发布</option><option>凭证</option></select></div>
+        <table><thead><tr><th>时间</th><th>操作者</th><th>事件</th><th>对象</th><th>详情</th><th>来源</th></tr></thead><tbody>${rows.map(r => `<tr>${r.map((v,i) => `<td>${i === 2 ? badge(v) : v}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+    }
+
+    function renderPage() {
+      const renderers = { overview: renderOverview, assetCatalog: renderAssetCatalog, masterData: renderAssetCatalog, analyticsData: renderAssetCatalog, crawlerData: renderAssetCatalog, competitorData: renderAssetCatalog, assetDetail: renderAssetDetail, biCenter: renderBiCenter, reportDetail: renderReportDetail, market: renderMarket, apps: renderApps, logs: renderLogs, guide: renderGuide, assets: renderAssets, publish: renderPublish, tags: renderTags, quality: renderQuality, roles: renderRoles, simulator: renderSimulator, operations: renderOperations, audit: renderAudit, apiDetail: renderApiDetail };
+      (renderers[state.page] || renderOverview)();
+      bindPageEvents();
+      updateNav();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function updateNav() {
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active",
+        item.dataset.page === state.page ||
+        (state.page === "apiDetail" && item.dataset.page === "market") ||
+        (state.page === "assetDetail" && ({ "主数据": "masterData", "分析数据": "analyticsData", "爬虫数据": "crawlerData", "竞品分析": "competitorData" }[state.selectedAsset?.type] === item.dataset.page)) ||
+        (state.page === "reportDetail" && item.dataset.page === "biCenter")
+      ));
+      document.querySelectorAll("[data-role-nav]").forEach(group => {
+        const allowed = group.dataset.roleNav.split(" ");
+        group.hidden = !allowed.includes(state.role);
+      });
+      const labels = { consumer: "业务研发 · 北美事业部", publisher: "数据开发 · 数据平台组", admin: "平台管理员 · 数据中心" };
+      document.getElementById("sideRole").textContent = labels[state.role];
+    }
+
+    function navigate(page) {
+      const adminPages = ["tags", "quality", "roles", "simulator", "operations", "audit"];
+      const publisherPages = ["assets", "publish"];
+      if (adminPages.includes(page) && state.role !== "admin") state.role = "admin";
+      if (publisherPages.includes(page) && state.role === "consumer") state.role = "publisher";
+      document.getElementById("roleSelect").value = state.role;
+      state.page = page;
+      sidebar.classList.remove("open");
+      renderPage();
+    }
+
+    function bindPageEvents() {
+      content.querySelectorAll("[data-go]").forEach(el => el.addEventListener("click", () => navigate(el.dataset.go)));
+      content.querySelectorAll("[data-overview-type]").forEach(el => el.addEventListener("click", () => {
+        if (el.dataset.overviewType === "BI资产") navigate("biCenter");
+        else { state.assetType = el.dataset.overviewType; state.assetDomain = ""; navigate("assetCatalog"); }
+      }));
+      content.querySelectorAll("[data-asset-type]").forEach(el => el.addEventListener("click", () => {
+        state.assetType = el.dataset.assetType;
+        state.assetDomain = "";
+        state.page = "assetCatalog";
+        renderPage();
+      }));
+      content.querySelectorAll("[data-asset-domain]").forEach(el => el.addEventListener("click", () => {
+        state.assetDomain = el.dataset.assetDomain;
+        renderPage();
+      }));
+      content.querySelectorAll("[data-asset]").forEach(el => el.addEventListener("click", () => {
+        state.selectedAsset = dataAssets.find(asset => asset.id === el.dataset.asset) || state.selectedAsset;
+        state.assetTab = "overview";
+        navigate("assetDetail");
+      }));
+      content.querySelectorAll("[data-asset-tab]").forEach(el => el.addEventListener("click", () => {
+        state.assetTab = el.dataset.assetTab;
+        renderAssetDetail();
+        bindPageEvents();
+      }));
+      content.querySelectorAll("[data-related-api]").forEach(el => el.addEventListener("click", () => {
+        state.selectedApi = apis.find(api => api.id === el.dataset.relatedApi) || state.selectedApi;
+        state.detailTab = "docs";
+        navigate("market");
+      }));
+      content.querySelectorAll("[data-report]").forEach(el => el.addEventListener("click", () => {
+        state.selectedReport = biReports.find(report => report.id === el.dataset.report) || state.selectedReport;
+        navigate("reportDetail");
+      }));
+      content.querySelectorAll("[data-bi-category]").forEach(el => el.addEventListener("click", () => {
+        const category = el.dataset.biCategory;
+        const reports = category === "全部" ? biReports : biReports.filter(report => report.category === category);
+        document.getElementById("reportGrid").innerHTML = biReportCards(reports);
+        content.querySelectorAll("[data-bi-category]").forEach(button => button.classList.toggle("primary", button === el));
+        content.querySelectorAll("#reportGrid [data-report]").forEach(button => button.addEventListener("click", () => {
+          state.selectedReport = biReports.find(report => report.id === button.dataset.report);
+          navigate("reportDetail");
+        }));
+      }));
+      content.querySelectorAll("[data-api]").forEach(el => el.addEventListener("click", () => {
+        state.selectedApi = apis.find(a => a.id === el.dataset.api) || apis[0];
+        state.detailTab = "docs";
+        navigate("apiDetail");
+      }));
+      content.querySelectorAll("[data-detail-tab]").forEach(el => el.addEventListener("click", () => {
+        state.detailTab = el.dataset.detailTab;
+        renderApiDetail();
+        bindPageEvents();
+      }));
+      content.querySelectorAll("[data-copy]").forEach(el => el.addEventListener("click", () => {
+        if (navigator.clipboard) navigator.clipboard.writeText(el.dataset.copy);
+        showToast("已复制到剪贴板");
+      }));
+      content.querySelectorAll("[data-export-doc]").forEach(el => el.addEventListener("click", () => downloadApiDocument(el.dataset.exportDoc)));
+      content.querySelectorAll("[data-start-wizard]").forEach(el => el.addEventListener("click", () => openWizard(el.dataset.startWizard)));
+
+      const assetSearch = document.getElementById("assetSearch");
+      if (assetSearch) assetSearch.addEventListener("input", () => {
+        state.assetKeyword = assetSearch.value;
+        renderAssetCatalog();
+        bindPageEvents();
+        const nextSearch = document.getElementById("assetSearch");
+        nextSearch.focus();
+        nextSearch.setSelectionRange(nextSearch.value.length, nextSearch.value.length);
+      });
+
+      const search = document.getElementById("apiSearch");
+      if (search) {
+        const update = (focusSearch = false) => {
+          state.marketKeyword = search.value;
+          renderMarket();
+          bindPageEvents();
+          if (focusSearch) {
+            const nextSearch = document.getElementById("apiSearch");
+            nextSearch.focus();
+            nextSearch.setSelectionRange(nextSearch.value.length, nextSearch.value.length);
+          }
+        };
+        search.addEventListener("input", () => update(true));
+      }
+      content.querySelectorAll("[data-market-category]").forEach(el => el.addEventListener("click", () => {
+        const category = el.dataset.marketCategory;
+        state.marketOpenCategories = state.marketOpenCategories.includes(category)
+          ? state.marketOpenCategories.filter(item => item !== category)
+          : [...state.marketOpenCategories, category];
+        renderMarket();
+        bindPageEvents();
+      }));
+      content.querySelectorAll("[data-market-api]").forEach(el => el.addEventListener("click", () => {
+        state.selectedApi = apis.find(api => api.id === el.dataset.marketApi) || state.selectedApi;
+        state.detailTab = "docs";
+        renderMarket();
+        bindPageEvents();
+      }));
+      content.querySelectorAll("[data-market-tab]").forEach(el => el.addEventListener("click", () => {
+        state.detailTab = el.dataset.marketTab;
+        renderMarket();
+        bindPageEvents();
+      }));
+
+      const send = document.getElementById("sendRequest");
+      if (send) send.addEventListener("click", () => {
+        send.disabled = true; send.textContent = "请求中...";
+        setTimeout(() => {
+          document.getElementById("responseStatus").className = "pill success";
+          document.getElementById("responseStatus").textContent = "200 OK";
+          document.getElementById("responseMeta").textContent = "耗时 86ms · Trace ID tr_demo_9f31a2";
+          document.getElementById("responseBox").textContent = JSON.stringify({
+            code: 0,
+            data: { sku: "AUVON-TENS-24M", pn: "PO17X4011", product_name: "24 Modes TENS Unit", brand: "AUVON", site: "US" },
+            meta: { asset_version: "v1.4.0", data_time: "2026-07-30T09:30:00Z", quality: "passed" }
+          }, null, 2);
+          send.disabled = false; send.textContent = "发送请求"; showToast("模拟请求成功");
+        }, 650);
+      });
+
+      const newApp = document.getElementById("newApp");
+      if (newApp) newApp.addEventListener("click", openCreateApp);
+      const createAppFromApi = document.getElementById("createAppFromApi");
+      if (createAppFromApi) createAppFromApi.addEventListener("click", () => state.selectedApi.access === "已授权" ? openCreateApp() : showRoleRequirement());
+      content.querySelectorAll("[data-log]").forEach(el => el.addEventListener("click", () => showLogDetail(el.dataset.log)));
+      const newRole = document.getElementById("newRole");
+      if (newRole) newRole.addEventListener("click", () => openRoleModal("新建角色权限包"));
+      content.querySelectorAll("[data-edit-role]").forEach(el => el.addEventListener("click", () => openRoleModal(`配置：${el.dataset.editRole}`)));
+      const newTag = document.getElementById("newTag");
+      if (newTag) newTag.addEventListener("click", () => openTagModal("新建标签"));
+      const batchTag = document.getElementById("batchTag");
+      if (batchTag) batchTag.addEventListener("click", () => openTagModal("批量打标签"));
+      content.querySelectorAll("[data-tag-edit]").forEach(el => el.addEventListener("click", () => openTagModal(`编辑标签：${el.dataset.tagEdit}`)));
+      const runSimulation = document.getElementById("runSimulation");
+      if (runSimulation) runSimulation.addEventListener("click", renderSimulationResult);
+    }
+
+    function downloadApiDocument(type) {
+      const api = state.selectedApi;
+      const documentData = type === "OpenAPI" ? {
+        openapi: "3.0.3",
+        info: { title: api.name, version: "1.4.0", description: api.desc },
+        servers: [{ url: "https://api-test.company.internal" }, { url: "https://api.company.internal" }],
+        paths: { [api.endpoint]: { [api.method.toLowerCase()]: { summary: api.name, security: [{ bearerAuth: [] }], responses: { "200": { description: "成功" }, "403": { description: "权限不足" }, "429": { description: "超出配额" } } } } },
+        components: { securitySchemes: { bearerAuth: { type: "http", scheme: "bearer" } } }
+      } : {
+        info: { name: `${api.name} · Postman Collection`, schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+        item: [{ name: api.name, request: { method: api.method, header: [{ key: "Authorization", value: "Bearer {{access_token}}" }, { key: "X-Client-Id", value: "{{client_id}}" }], url: `{{base_url}}${sampleEndpoint(api)}` } }],
+        variable: [{ key: "base_url", value: "https://api-test.company.internal" }]
+      };
+      const blob = new Blob([JSON.stringify(documentData, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${api.id}-${type.toLowerCase()}.json`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast(`${type} 文档已生成`);
+    }
+
+    function openModal(title, body, foot, small = false) {
+      modalTitle.textContent = title;
+      modalBody.innerHTML = body;
+      modalFoot.innerHTML = foot || `<button class="btn" id="modalCancel">关闭</button>`;
+      modal.classList.toggle("sm", small);
+      backdrop.classList.add("open");
+      document.body.style.overflow = "hidden";
+      const cancel = document.getElementById("modalCancel");
+      if (cancel) cancel.addEventListener("click", closeModal);
+    }
+
+    function closeModal() {
+      backdrop.classList.remove("open");
+      document.body.style.overflow = "";
+      modal.classList.remove("sm");
+    }
+
+    function openCreateApp() {
+      openModal("创建内部应用", `
+        <div class="form-group"><label>应用名称</label><input id="appName" placeholder="例如：北美经营分析助手" /></div>
+        <div class="form-group"><label>所属业务线</label><select><option>北美事业部</option><option>欧洲事业部</option><option>供应链中心</option><option>产品中心</option></select></div>
+        <div class="form-group"><label>使用环境</label><select id="appEnv"><option>测试</option><option>生产</option></select></div>
+        <div class="form-group"><label>使用说明</label><textarea placeholder="说明业务场景和调用目的"></textarea></div>
+        <div class="notice">应用将继承创建人的岗位角色权限包，无需逐个申请 API。生产环境调用会启用更严格限流和审计。</div>`,
+        `<button class="btn" id="modalCancel">取消</button><button class="btn primary" id="saveApp">创建并生成凭证</button>`, true);
+      document.getElementById("modalCancel").addEventListener("click", closeModal);
+      document.getElementById("saveApp").addEventListener("click", () => {
+        const name = document.getElementById("appName").value.trim() || "北美经营分析助手";
+        state.apps.push({ name, owner: "北美事业部", env: document.getElementById("appEnv").value, apiCount: 4, clientId: `app_${Date.now().toString(36)}`, status: "正常" });
+        closeModal(); showToast("应用创建成功，凭证已生成"); navigate("apps");
+      });
+    }
+
+    function showRoleRequirement() {
+      openModal("当前角色权限不足", `<div class="notice warning">该 API 需要“供应链计划”或“供应链研发”岗位角色。平台采用岗位角色自动授权，请联系组织管理员确认岗位角色，不支持个人逐项申请。</div>
+        <div style="margin-top:14px"><strong>当前角色</strong><p class="list-sub">业务研发 · 北美事业部</p><strong>所需角色</strong><p class="list-sub">供应链计划 / 供应链研发 / 平台管理员</p></div>`, `<button class="btn" id="modalCancel">知道了</button>`, true);
+      document.getElementById("modalCancel").addEventListener("click", closeModal);
+    }
+
+    function showLogDetail(trace) {
+      openModal(`调用详情 · ${trace}`, `
+        <div class="cards-3"><div class="card stat-card"><div class="stat-label">状态</div><div class="stat-value" style="font-size:18px">403</div></div><div class="card stat-card"><div class="stat-label">耗时</div><div class="stat-value" style="font-size:18px">18ms</div></div><div class="card stat-card"><div class="stat-label">环境</div><div class="stat-value" style="font-size:18px">生产</div></div></div>
+        <h3 class="section-title" style="margin-top:18px">失败原因</h3><div class="notice warning">当前应用岗位角色不包含供应链库存明细权限。请检查应用所属业务线和角色权限包。</div>
+        <h3 class="section-title" style="margin-top:18px">请求摘要</h3><div class="code-box">GET /v1/inventory/available?sku=AUVON-TENS-24M
+Client-ID: app_ops_us_8f21
+Role-Package: business-developer</div>`, `<button class="btn" id="modalCancel">关闭</button>`);
+      document.getElementById("modalCancel").addEventListener("click", closeModal);
+    }
+
+    function openTagModal(title) {
+      openModal(title, `
+        <div class="form-group"><label>标签名称</label><input value="${title.startsWith("编辑标签：") ? title.replace("编辑标签：", "") : ""}" placeholder="例如：敏感成本" /></div>
+        <div class="form-group"><label>标签分组</label><select>${tagGroups.map(group => `<option>${group.name}</option>`).join("")}</select></div>
+        <div class="form-group"><label>适用对象</label><select><option>API 与字段</option><option>仅 API</option><option>仅字段</option></select></div>
+        <div class="form-group"><label>标签定义</label><textarea placeholder="说明标签的业务定义、适用范围和使用规则"></textarea></div>
+        <div class="notice">标签变更将同步影响 API 市场筛选、字段说明和权限策略，并写入审计日志。</div>`,
+        `<button class="btn" id="modalCancel">取消</button><button class="btn primary" id="saveTag">保存标签</button>`, true);
+      document.getElementById("modalCancel").addEventListener("click", closeModal);
+      document.getElementById("saveTag").addEventListener("click", () => { closeModal(); showToast("标签已保存并同步关联资产"); });
+    }
+
+    function openRoleModal(title) {
+      const currentName = title.startsWith("配置") ? title.replace("配置：", "") : "";
+      openModal(title, `
+        <div class="notice warning" style="margin-bottom:14px"><strong>默认拒绝、拒绝优先。</strong> 只有被角色明确允许的数据资产、BI 报表、API、数据行和字段才能访问。</div>
+        <div class="form-group"><label>角色名称</label><input value="${currentName}" placeholder="例如：产品经理" /></div>
+        <div class="form-group"><label>适用组织</label><select><option>所有业务线</option><option>产品中心</option><option>运营中心</option><option>供应链中心</option><option>财务中心</option></select></div>
+        <div class="policy-grid">
+          <div class="policy-block"><h3>1. 资产与服务权限</h3><p>按资产类型授权，并继承到关联 API 与 BI。</p><div class="checkbox-grid">
+            ${["主数据","分析数据","爬虫数据","竞品分析","BI 报表","API 服务"].map((type, index) => `<label class="checkbox-row"><input type="checkbox" ${index < 2 ? "checked" : ""} />${type} <span class="category-count">${type === "BI 报表" ? biReports.length : type === "API 服务" ? apis.length : dataAssets.filter(asset => asset.type === type).length}</span></label>`).join("")}
+          </div></div>
+          <div class="policy-block"><h3>2. 行级数据范围</h3><p>使用当前用户属性动态过滤返回数据。</p>
+            <div class="form-group"><label>事业部</label><select><option>等于当前用户.事业部</option><option>授权事业部列表</option><option>全部拒绝</option></select></div>
+            <div class="form-group"><label>站点</label><select><option>包含于当前用户.授权站点</option><option>仅 US</option><option>全部拒绝</option></select></div>
+            <div class="form-group"><label>仓库 / 店铺</label><select><option>包含于当前用户.授权范围</option><option>不限制</option><option>全部拒绝</option></select></div>
+          </div>
+          <div class="policy-block"><h3>3. 列级字段控制</h3><p>勾选后字段从 API 响应中完全隐藏。</p><div class="checkbox-grid">
+            <label class="checkbox-row"><input type="checkbox" checked />unit_cost</label>
+            <label class="checkbox-row"><input type="checkbox" checked />profit</label>
+            <label class="checkbox-row"><input type="checkbox" />supplier_contact</label>
+            <label class="checkbox-row"><input type="checkbox" checked />user_email</label>
+            <label class="checkbox-row"><input type="checkbox" />phone</label>
+            <label class="checkbox-row"><input type="checkbox" />internal_note</label>
+          </div></div>
+        </div>`,
+        `<button class="btn" id="modalCancel">取消</button><button class="btn" id="testRole">模拟验证</button><button class="btn primary" id="saveRole">保存并生成新版本</button>`);
+      document.getElementById("modalCancel").addEventListener("click", closeModal);
+      document.getElementById("testRole").addEventListener("click", () => { closeModal(); navigate("simulator"); });
+      document.getElementById("saveRole").addEventListener("click", () => { closeModal(); showToast("角色策略 v3.3 已保存并记录审计"); });
+    }
+
+    function renderSimulationResult() {
+      const api = apis.find(item => item.id === document.getElementById("simApi").value) || apis[0];
+      const asset = dataAssets.find(item => item.id === document.getElementById("simAsset").value) || dataAssets[0];
+      const user = document.getElementById("simUser").value;
+      const allowed = api.access === "已授权" || user.includes("供应链") || user.includes("财务");
+      document.getElementById("simulationResult").innerHTML = `
+        <div class="card-head"><strong>模拟结果 · ${asset.name} → ${api.name}</strong>${badge(allowed ? "允许调用" : "拒绝调用")}</div>
+        <div class="card-body">
+          <div class="permission-result">
+            <div class="result-panel"><strong>命中策略</strong><ul><li>角色包：${user.split(" · ").pop()}</li><li>资产：${asset.id}</li><li>API：${allowed ? "显式允许" : "未显式授权"}</li><li>优先级：拒绝优先</li></ul></div>
+            <div class="result-panel"><strong>允许的数据行</strong><ul><li>business_unit = NorthAmerica</li><li>site IN [US, CA]</li><li>warehouse IN [LAX-01]</li></ul></div>
+            <div class="result-panel"><strong>隐藏字段</strong><ul><li>unit_cost</li><li>profit</li><li>user_email</li></ul></div>
+          </div>
+          <h3 class="section-title" style="margin-top:16px">最终响应预览</h3>
+          <div class="code-box">${allowed ? `{
+  "sku": "AUVON-TENS-24M",
+  "site": "US",
+  "warehouse": "LAX-01",
+  "available_qty": 1260,
+  "_hidden_fields": ["unit_cost", "profit", "user_email"]
+}` : `{
+  "code": 403,
+  "message": "默认拒绝：当前角色未被授予该资产或关联 API"
+}`}</div>
+        </div>`;
+    }
+
+    const wizardLabels = {
+      existing: ["导入定义", "业务信息", "权限策略", "测试校验", "发布"],
+      dataset: ["选择数据集", "选择字段", "查询配置", "安全策略", "发布"]
+    };
+
+    function openWizard(type) {
+      state.wizardType = type; state.wizardStep = 0;
+      renderWizard();
+    }
+
+    function renderWizard() {
+      const labels = wizardLabels[state.wizardType];
+      const title = state.wizardType === "existing" ? "登记已有 API" : "从数据集生成 API";
+      const stepContent = wizardStepContent();
+      openModal(title, `<div class="wizard-steps">${labels.map((l,i) => `<div class="wizard-step ${i === state.wizardStep ? "active" : i < state.wizardStep ? "done" : ""}">${i+1}. ${l}</div>`).join("")}</div>${stepContent}`,
+        `<button class="btn" id="wizardCancel">${state.wizardStep === 0 ? "取消" : "上一步"}</button><button class="btn primary" id="wizardNext">${state.wizardStep === 4 ? "确认发布" : "下一步"}</button>`);
+      document.getElementById("wizardCancel").addEventListener("click", () => {
+        if (state.wizardStep === 0) closeModal(); else { state.wizardStep--; renderWizard(); }
+      });
+      document.getElementById("wizardNext").addEventListener("click", () => {
+        if (state.wizardStep < 4) { state.wizardStep++; renderWizard(); }
+        else { closeModal(); showToast("API 已发布到测试环境"); navigate("assets"); }
+      });
+    }
+
+    function wizardStepContent() {
+      const step = state.wizardStep;
+      if (state.wizardType === "existing") {
+        if (step === 0) return `<div class="form-group"><label>OpenAPI / Swagger 地址</label><input value="https://service.internal/openapi.json" /></div><div class="form-group"><label>目标网关环境</label><select><option>测试环境</option><option>生产环境</option></select></div><div class="notice success">已识别 6 个 Endpoint、18 个 Schema，定义格式校验通过。</div>`;
+        if (step === 1) return `<div class="form-group"><label>API 名称</label><input value="Amazon 广告活动查询" /></div><div class="form-group"><label>资产域</label><select><option>经营分析</option><option>产品主数据</option><option>供应链</option></select></div><div class="form-group"><label>Owner</label><input value="广告数据组" /></div><div class="form-group"><label>业务说明</label><textarea>查询站点广告活动、预算、花费与效果指标。</textarea></div>`;
+        if (step === 2) return `<div class="form-group"><label>岗位角色权限包</label><select multiple style="height:100px;padding:8px"><option selected>业务研发</option><option selected>运营分析师</option><option>财务分析</option><option>产品经理</option></select></div><div class="form-group"><label>敏感等级</label><select><option>L2 · 内部受限</option><option>L1 · 内部公开</option><option>L3 · 敏感</option></select></div><div class="notice">角色成员将自动获得访问权限，所有调用仍使用应用凭证并记录审计。</div>`;
+      } else {
+        if (step === 0) return `<div class="form-group"><label>数据连接</label><select><option>StarRocks · dws_production</option><option>MySQL · product_master</option><option>PostgreSQL · competitor_db</option></select></div><div class="form-group"><label>认证数据集</label><select><option>dws_inventory_health_daily</option><option>dws_sku_sales_daily</option><option>dim_product_master</option></select></div><div class="notice success">数据集质量通过率 99.98%，Owner：供应链数据组，刷新频率：每小时。</div>`;
+        if (step === 1) return `<table><thead><tr><th>选择</th><th>字段</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>✓</td><td>sku</td><td>string</td><td>SKU 编码</td></tr><tr><td>✓</td><td>warehouse_code</td><td>string</td><td>仓库编码</td></tr><tr><td>✓</td><td>available_qty</td><td>integer</td><td>可售库存</td></tr><tr><td>✓</td><td>coverage_days</td><td>decimal</td><td>库存覆盖天数</td></tr><tr><td>—</td><td>unit_cost</td><td>decimal</td><td>单位成本（敏感）</td></tr></tbody></table>`;
+        if (step === 2) return `<div class="form-group"><label>Endpoint</label><input value="/v1/inventory/available" /></div><div class="form-group"><label>必填查询参数</label><input value="sku, warehouse_code" /></div><div class="form-group"><label>单次最大返回</label><select><option>100 条</option><option>500 条</option><option>1000 条</option></select></div><div class="form-group"><label>缓存策略</label><select><option>缓存 5 分钟</option><option>不缓存</option><option>缓存 30 分钟</option></select></div>`;
+      }
+      if (step === 3) return `<div class="form-group"><label>限流策略</label><select><option>每应用 300 次/分钟</option><option>每应用 100 次/分钟</option></select></div><div class="form-group"><label>字段保护</label><select><option>按角色字段脱敏</option><option>不返回敏感字段</option></select></div><div class="form-group"><label>服务 SLA</label><select><option>99.90% · P95 ≤ 300ms</option><option>99.50% · P95 ≤ 500ms</option></select></div><div class="notice success">文档完整度 100%，Schema 兼容检查通过，测试用例 8/8 通过。</div>`;
+      return `<div class="notice success"><strong>发布检查已通过</strong><br/>业务信息完整 · Owner 已确认 · 角色权限已配置 · 文档完整度 100% · 测试 8/8 通过 · 回滚版本已生成</div><div style="margin-top:14px" class="list"><div class="list-row"><div><div class="list-title">发布环境</div><div class="list-sub">测试环境</div></div>${badge("就绪")}</div><div class="list-row"><div><div class="list-title">版本</div><div class="list-sub">v1.0.0</div></div>${badge("新版本")}</div><div class="list-row"><div><div class="list-title">通知范围</div><div class="list-sub">Owner、平台管理员、角色权限包成员</div></div>${badge("自动通知")}</div></div>`;
+    }
+
+    function showToast(message) {
+      toast.textContent = message; toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    document.querySelectorAll(".nav-item").forEach(item => item.addEventListener("click", () => navigate(item.dataset.page)));
+    document.getElementById("roleSelect").addEventListener("change", (event) => {
+      state.role = event.target.value;
+      localStorage.setItem("datahub-demo-role", state.role);
+      if (state.role === "consumer" && ["assets","publish","tags","quality","roles","simulator","operations","audit"].includes(state.page)) state.page = "overview";
+      if (state.role === "publisher" && ["tags","quality","roles","simulator","operations","audit"].includes(state.page)) state.page = "assets";
+      renderPage();
+      showToast("演示角色已切换");
+    });
+    document.getElementById("globalSearch").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") { state.assetKeyword = event.target.value; state.assetType = ""; state.assetDomain = ""; navigate("assetCatalog"); }
+    });
+    document.getElementById("mobileMenu").addEventListener("click", () => sidebar.classList.toggle("open"));
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+    backdrop.addEventListener("click", event => { if (event.target === backdrop) closeModal(); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeModal(); });
+
+    document.getElementById("roleSelect").value = state.role;
+    renderPage();
+  </script>
+</body>
+</html>
